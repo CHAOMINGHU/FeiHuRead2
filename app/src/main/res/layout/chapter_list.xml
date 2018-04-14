@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.MainActivity" >
+
+     <ListView 
+      android:id="@+id/lv_chapters"
+      android:layout_width="match_parent"
+      android:layout_height="320dp"
+     
+      >
+  </ListView>
+    <TextView
+        android:id="@+id/txt_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="数据加载中"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+    <Button
+        android:id="@+id/read"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="read"
+        android:text="读取" />
+     <Button
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="save"
+        android:text="缓存" />
+      <Button
+        android:id="@+id/clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="clear"
+        android:text="清楚緩存" />
+    
+
+ 
+    
+
+</LinearLayout>
