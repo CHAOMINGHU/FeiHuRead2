@@ -49,7 +49,7 @@ public class GetBookTypeWhitchSelected {
                     String bookName=link.text().trim();
                     String bookHref=link.attr("href");
                     Log.e("TAG","书名："+bookName+"网址："+bookHref);
-                    myResult.getBookDetail(bookName);                             //把获得的数据加入回调接口
+                    myResult.getBookDetail(bookName.toString().trim());                             //把获得的数据加入回调接口
                 }
             }
         }).start();

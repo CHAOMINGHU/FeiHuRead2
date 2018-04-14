@@ -65,24 +65,24 @@ public class GetNetTxtData {
                 Element typeList = document.getElementsByAttributeValue("class", "nav").first();
                 Elements tl = typeList.getElementsByTag("a");
                 Elements eid = typeList.select(" ul li:nth-of-type(2)~dd");
-                Log.e("TAG","link: " +eid.toString());
+                Log.e("TAG", "link: " + eid.toString());
                 for (Element link : tl) {
-                    String bookTypeUrl="http:"+link.attr("href");
-                    String bookTypeName=link.text().trim();
-                    Log.e("TAG", "网址：" + bookTypeUrl+"类型： "+bookTypeName);
+                    String bookTypeUrl = "http:" + link.attr("href");
+                    String bookTypeName = link.text().trim();
+                   // Log.e("TAG", "网址：" + bookTypeUrl + "类型： " + bookTypeName);
 
                 }
-                //分类头上的四个
+
                 Element singerListDiv = document.getElementsByAttributeValue("class", "novelslist").first();
                 Elements links = singerListDiv.getElementsByTag("a");
 
                 for (Element link : links) {
                     href1 = link.attr("href");
-                    String oldHref = title1 = link.text().trim();
+                    String title1 = link.text().trim();
                     //System.out.println(href);
 //                    Log.e("TAG", "网址：" + href1);
 //                    Log.e("TAG", "书名：" + title1);
-                    try {
+                   /* try {
                         document1 = Jsoup
                                 .connect(href)
                                 .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31")
@@ -92,18 +92,12 @@ public class GetNetTxtData {
                         e.printStackTrace();
 
                     }
-                    if (document1.getElementById("fmimg") == null)
-                    {
-//                        Log.e("TAG", "nsiofhasoifhaoifnfason：" + "88行为空");
+                    if (document1.getElementById("fmimg") == null) {
+                        Log.e("TAG", "nsiofhasoifhaoifnfason：" + "88行为空");
                         return;
                     }
-                    Element id = document1.getElementById("fmimg");
-                    //cover1=id.select("img").attr("src");
-//                    Log.e("TAG", "书籍链接第二布局:" + href1);
-//                    Log.e("TAG", "书名第二布局:" + title1);
-//					Log.e("TAG","封面第二布局:"+cover1);
-                    if (title1 != null || href1 != null)
-                        data.getBookInfo1(title1, href1);
+                    Element id = document1.getElementById("fmimg");*/
+                    data.getBookInfo1(title1, href1);
                 }
             }
         }).start();

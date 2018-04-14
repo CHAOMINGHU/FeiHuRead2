@@ -49,7 +49,7 @@ public class BookTypeWitchSelectedAdapter extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
     String bookName=datas.get(position).getBookName();
         VHTYPE vh = (VHTYPE) holder;
-        vh.mTextView.setText(bookName);
+        vh.mTextView.setText(bookName.toString().trim());
     }
 
     @Override

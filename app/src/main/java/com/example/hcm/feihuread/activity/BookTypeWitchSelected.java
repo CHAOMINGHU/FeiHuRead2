@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.adapter.BookTypeWitchSelectedAdapter;
 import com.example.hcm.feihuread.data.GetBookTypeWhitchSelected;
 import com.example.hcm.feihuread.read.BookTypeAbout;
+import com.example.hcm.feihuread.utils.DividerItemDecorations;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,26 +36,20 @@ public class BookTypeWitchSelected extends Activity {
 
         @Override
         public boolean handleMessage(Message msg) {
-
             switch (msg.what) {
-
                 case 1:
                     bt = new BookTypeAbout();
                     bookName = msg.getData().getString("bookName");
                     initNetData();
                     adapter=new BookTypeWitchSelectedAdapter(getApplicationContext(),list);
                     rv.setAdapter(adapter);
-
                     break;
-
             }
             return false;
         }
     });
-    private void initNetData()
+    public void initNetData()
     {
-
-
         bt.setBookName(bookName);
         bt.setBookHref("asdasd");
         bt.setTheNewstChapter("mm");
@@ -69,33 +65,13 @@ public class BookTypeWitchSelected extends Activity {
         getDetailData();
         initView();
     }
-//    private void initBook(){
-//        for (int i = 0; i < 10; i++) {
-//            BookTypeAbout book01 = new BookTypeAbout();
-//
-//            book01.setBookName("dsad"+i);
-//            book01.setBookHref("asdasd");
-//            book01.setTheNewstChapter("mm");
-//            book01.setUpdateData("jj"+i);
-//            list.add(book01);
-////            Book book02 = new Book("Book"+i,R.drawable.icon02);
-////            mlsit.add(book02);
-////            Book book03 = new Book("Book"+i,R.drawable.icon03);
-////            mlsit.add(book03);
-//        }
-//    }
     private void initView() {
         rv = findViewById(R.id.rv_type);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(linearLayoutManager);
-
-   //     initBook();
-
-
-
+        rv.addItemDecoration(new DividerItemDecorations());
     }
     GetBookTypeWhitchSelected data = new GetBookTypeWhitchSelected(this, mHref);
-
     private void getDetailData() {
         data.getDataFunction(new GetBookTypeWhitchSelected.MyResult() {
             @Override

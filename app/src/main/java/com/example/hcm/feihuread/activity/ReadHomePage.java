@@ -155,7 +155,7 @@ public class ReadHomePage extends Activity
 		//mRecy.addItemDecoration();
 		//设置管理
 		lv.setLayoutManager(gridLayoutManager);
-		adapter = new MyRecyclerAdapter(list,this);
+		//adapter = new MyRecyclerAdapter(list,this);
 
 		//设置适配器
 		//lv.setAdapter(adapter);

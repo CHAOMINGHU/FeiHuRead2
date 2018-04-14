@@ -1,12 +1,15 @@
 package com.example.hcm.feihuread.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -26,6 +29,7 @@ import com.example.hcm.feihuread.data.GetChapterData;
 import com.example.hcm.feihuread.popuwindow.CustomPopWindow;
 import com.example.hcm.feihuread.read.MyPage;
 import com.example.hcm.feihuread.utils.CharsetDetector;
+import com.example.hcm.feihuread.utils.MyApplication;
 import com.example.hcm.feihuread.utils.ToastUtil;
 import com.example.hcm.feihuread.view.FlipperLayout;
 import com.example.hcm.feihuread.view.ReadView;
@@ -37,6 +41,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
@@ -48,94 +53,114 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
     CustomPopWindow popWindow = null;
     CustomPopWindow popWindow2 = null;
     FlipperLayout rootLayout;
-    ReadView readView1;
-    ReadView readView2;
+    static ReadView readView1;
+    static ReadView readView2;
     View recoverView ;
     View view1;
     View view2 ;
-    private String textData;
+    private static String textData;
     private String url;
     private String nextUrl;
     int index;
     String txt = "123";
     private static final int MSG_DRAW_TEXT = 1;
-    CharBuffer buffer = CharBuffer.allocate(8000);
-    boolean oneIsLayout;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_DRAW_TEXT:
-
-
-                    buffer.position(0);
-
-                    //����һҳ���ı�
-                    readView1.setText(buffer.toString());
-
-                    //���ڶ�ҳ���ı�
-                    ViewTreeObserver vto1 = readView1.getViewTreeObserver();
-                    vto1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            if (oneIsLayout)
-                                return;
-
-                            int charNum = readView1.getCharNum();
+    static CharBuffer buffer = CharBuffer.allocate(8000);
+    static boolean oneIsLayout;
+    static MyHandler mHandler;
+  private static class  MyHandler extends  Handler
+  {
+      private WeakReference<ReadPage> mActivity = null;
+      public  MyHandler(ReadPage activity)
+      {
+          mActivity=new WeakReference<ReadPage>(activity);
+      }
 
 
-                            MyPage page = new MyPage();
-                            page.setPageSize(charNum);
-                            page.setStartPosition(charNum);
-                            page.setId(1);
 
-                            //����һҳ�����ݴ洢�����ݿ��У���������ݲ�����
-                            if (isSavePage(1)) {
-                                page.update(1);
-                            } else {
-                                page.save();
-                            }
-
-                            buffer.position(charNum);
-                            readView2.setText(buffer.toString());
-
-                            oneIsLayout = true;
-                        }
-                    });
+      @Override
+      public void handleMessage(Message msg) {
+          ReadPage activity=mActivity.get();
+          super.handleMessage(msg);
+          if(activity!=null){
+              switch (msg.what) {
+                  case MSG_DRAW_TEXT:
 
 
-                    ViewTreeObserver vto2 = readView2.getViewTreeObserver();
-                    vto2.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            int charNum = readView2.getCharNum();
-                            if (charNum == 0)
-                                return;
+                      buffer.position(0);
 
-                            //���ڶ�ҳ�����ݴ洢�����ݿ���, ��������ݲ�����
-                            MyPage page = new MyPage();
-                            page.setPageSize(charNum);
-                            page.setStartPosition(charNum + getStartPosition(1));
-                            page.setId(2);
+                      //����һҳ���ı�
+                      readView1.setText(buffer.toString());
 
-                            if (isSavePage(2)) {
-                                page.update(2);
-                            } else {
-                                page.save();
-                            }
-                        }
-                    });
-                    break;
-                case 2:
-                    textData = msg.getData().getString("tc");
-                    new ReadingThread().start();
-                    // textContent.setText(textData);
-                    break;
+                      //���ڶ�ҳ���ı�
+                      ViewTreeObserver vto1 = readView1.getViewTreeObserver();
+                      vto1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                          @Override
+                          public void onGlobalLayout() {
+                              if (oneIsLayout)
+                                  return;
 
-            }
-        }
-    };
+                              int charNum = readView1.getCharNum();
+
+
+                              MyPage page = new MyPage();
+                              page.setPageSize(charNum);
+                              page.setStartPosition(charNum);
+                              page.setId(1);
+
+                              //����һҳ�����ݴ洢�����ݿ��У���������ݲ�����
+                              if (isSavePage(1)) {
+                                  page.update(1);
+                              } else {
+                                  page.save();
+                              }
+
+                              buffer.position(charNum);
+                              readView2.setText(buffer.toString());
+
+                              oneIsLayout = true;
+                          }
+                      });
+
+
+                      ViewTreeObserver vto2 = readView2.getViewTreeObserver();
+                      vto2.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                          @Override
+                          public void onGlobalLayout() {
+                              int charNum = readView2.getCharNum();
+                              if (charNum == 0)
+                                  return;
+
+                              //���ڶ�ҳ�����ݴ洢�����ݿ���, ��������ݲ�����
+                              MyPage page = new MyPage();
+                              page.setPageSize(charNum);
+                              page.setStartPosition(charNum + getStartPosition(1));
+                              page.setId(2);
+
+                              if (isSavePage(2)) {
+                                  page.update(2);
+                              } else {
+                                  page.save();
+                              }
+                          }
+                      });
+                      break;
+                  case 2:
+                      textData = msg.getData().getString("tc");
+                      new ReadingThread().start();
+                      // textContent.setText(textData);
+                      break;
+
+              }
+          }
+
+      }
+  }
+//    private Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//
+//        }
+//    };
 
     public static InputStream getStringStream(String sInputString) {
         if (sInputString != null && !sInputString.trim().equals("")) {
@@ -150,12 +175,12 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
     }
 
     //��ҳ�Ƿ�洢
-    private boolean isSavePage(int pageNo) {
+    private static boolean isSavePage(int pageNo) {
         return DataSupport.find(MyPage.class, pageNo) != null;
     }
 
     //��ȡ��ҳ�Ľ���λ��
-    private int getStartPosition(int pageNo) {
+    private static int getStartPosition(int pageNo) {
         if (pageNo < 1) {
 
             return 0;
@@ -167,13 +192,16 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
         return 0;
     }
 
-    GetChapterData data = new GetChapterData(this, url);
 
+
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initByTitleBar();
         setContentView(R.layout.f_main);
+          mHandler=new MyHandler(this);
+         mHandler.postDelayed(ReadingThread.currentThread(),1000*60*5);
         rootLayout = (FlipperLayout) findViewById(R.id.container);
 
         recoverView = LayoutInflater.from(ReadPage.this).inflate(R.layout.view_new, null);
@@ -310,12 +338,18 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
                 && y > mMiddleY / 2
                 && y < ( screenHight - mMiddleY / 2)
                 ){
-            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+            if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+
+
                 UserPop();
                 UserPop2();
+                if(popWindow2.mPopupWindow.isShowing())
+                    popWindow.mPopupWindow.isShowing();
+
                 popWindow2.mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
+
                         popWindow.dissmiss();
                     }
                 });
@@ -327,7 +361,7 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
         return false;
     }
 
-    private class ReadingThread extends Thread {
+    private static class ReadingThread extends Thread {
         InputStream in = null;
 //        public ReadingThread(InputStream in){
 //            this.in=in;
@@ -339,7 +373,7 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
         public void run() {
             BufferedReader reader = null;
 
-            AssetManager assets = getAssets();
+            //AssetManager assets = getAssets();
             try {
                 // in = assets.open("text.txt");
                 in = getStringStream(textData);
@@ -348,6 +382,7 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
 
                 reader.read(buffer);
                 Log.e("FUCK", buffer.toString().replaceAll("�", ""));
+
                 mHandler.obtainMessage(MSG_DRAW_TEXT).sendToTarget();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -384,6 +419,7 @@ public class ReadPage extends Activity implements View.OnClickListener, FlipperL
             public void getResult(String txtData, String txtChapter, boolean isFail,
                                   int time) {
                 // TODO Auto-generated method stub
+
                 Message msg = mHandler.obtainMessage();
                 Bundle bundle = new Bundle();
                 bundle.putString("tc", txtData);
