@@ -2,4 +2,6 @@
     <string name="app_name">飞灵狐阅读</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="menu_search">搜索</string>
+    <string name="menu_setting">搜索</string>
 </resources>

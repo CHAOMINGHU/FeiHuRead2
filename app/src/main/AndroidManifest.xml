@@ -21,10 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ReadContent"/>
-        <activity android:name=".activity.ReadPage"/>
-        <activity android:name=".activity.BookTypeWitchSelected"/>
 
+        <activity android:name=".activity.ReadPageActivity"/>
+        <activity android:name=".activity.BookTypeWitchSelectedActivity"/>
+        <activity android:name=".activity.SearchActivity"/>
     </application>
 
 

@@ -17,11 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hcm.feihuread.R;
-import com.example.hcm.feihuread.activity.BookTypeWitchSelected;
-import com.example.hcm.feihuread.activity.ReadPage;
+import com.example.hcm.feihuread.activity.BookTypeWitchSelectedActivity;
+import com.example.hcm.feihuread.activity.ReadPageActivity;
 import com.example.hcm.feihuread.adapter.MyRecyclerAdapter;
 import com.example.hcm.feihuread.data.GetNetTxtData;
-import com.example.hcm.feihuread.view.BannerView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -93,7 +92,7 @@ public class BookHomePageFragment extends Fragment {
 
 
                             } else {
-                                Intent intent = new Intent(getContext(), BookTypeWitchSelected.class);
+                                Intent intent = new Intent(getContext(), BookTypeWitchSelectedActivity.class);
                                 startActivity(intent);
 
                             }
@@ -163,7 +162,7 @@ public class BookHomePageFragment extends Fragment {
                 //Toast.makeText(mContext,nextHref,Toast.LENGTH_LONG).show();
                 //                Looper.loop();
                 if (nextHref != null) {
-                    Intent intent = new Intent(mContext, ReadPage.class);
+                    Intent intent = new Intent(mContext, ReadPageActivity.class);
                     intent.putExtra("a", nextHref);
                     // intent.putExtra("a","http://www.biquge5200.com/75_75597/146416975.html");
                     startActivity(intent);

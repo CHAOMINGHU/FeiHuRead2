@@ -3,6 +3,7 @@ package com.example.hcm.feihuread.activity;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,11 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,16 +26,18 @@ import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.adapter.MyFragmentPagerAdapter;
 import com.example.hcm.feihuread.fragment.BookHomePageFragment;
 import com.example.hcm.feihuread.fragment.BookrackFragment;
+import com.example.hcm.feihuread.utils.ToastUtil;
 
 @SuppressLint("CutPasteId")
 @SuppressWarnings("unused")
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements View.OnClickListener{
     private ArrayList<Fragment> fragmentlist;
     private ViewPager mviewpager;
     private View viewbar;
     private int currIndex;//当前页卡编号
     TextView pager1;
     TextView pager2;
+    ImageView search;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,10 +52,20 @@ public class MainActivity extends FragmentActivity {
 
     //初始化标签
     private void initView() {
-        pager1 = (TextView) findViewById(R.id.id_page1);
-        pager2 = (TextView) findViewById(R.id.id_page2);
+        pager1 = findViewById(R.id.id_page1);
+        pager2 = findViewById(R.id.id_page2);
+        search = findViewById(R.id.iv_search);
+        search.setOnClickListener((View.OnClickListener) this);
         pager1.setOnClickListener(new txListner(0));
         pager2.setOnClickListener(new txListner(1));
+    }
+
+    @Override
+    public void onClick(View view) {
+//        ToastUtil.getLongToastByString(this,"Fuck");
+        Intent intent =new Intent(this,SearchActivity.class);
+        startActivity(intent);
+
     }
 
     //监听页面切换
