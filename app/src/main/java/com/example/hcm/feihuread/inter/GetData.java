@@ -1,4 +1,4 @@
-package com.example.hcm.feihuread.data;
+package com.example.hcm.feihuread.inter;
 
 public interface GetData
 {

@@ -3,7 +3,6 @@ package com.example.hcm.feihuread.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -16,7 +15,7 @@ import android.widget.ListView;
 
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.data.GetSearchData;
-import com.example.hcm.feihuread.data.SearchDataFunction;
+import com.example.hcm.feihuread.inter.SearchDataFunction;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

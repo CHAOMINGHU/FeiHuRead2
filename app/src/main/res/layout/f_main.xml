@@ -1,8 +1,45 @@
-<com.example.hcm.feihuread.view.FlipperLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
-    >
+    <com.example.hcm.feihuread.view.FlipperLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
 
-</com.example.hcm.feihuread.view.FlipperLayout>
+        >
+    </com.example.hcm.feihuread.view.FlipperLayout>
+   <!-- <View
+        android:id="@+id/v1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/colorPrimaryDark"
+        />-->
+<include
+    android:id="@+id/mv1"
+    layout="@layout/set_top"
+    android:layout_gravity="top"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    />
+    <include
+        android:id="@+id/mv2"
+        layout="@layout/set_botttom"
+        android:layout_gravity="bottom"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        />
+
+    <!--<View
+        android:id="@+id/v2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/colorAccent"
+        android:layout_gravity="bottom"
+        />-->
+
+
+</FrameLayout>
+

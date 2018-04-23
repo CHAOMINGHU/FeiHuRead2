@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Scroller;
 import android.widget.Toast;
 
+import com.example.hcm.feihuread.utils.ToastUtil;
+
 /**
  * Created by Administrator on 2018/4/2 0002.
  */
@@ -341,8 +343,8 @@ public class FlipperLayout extends ViewGroup {
                     currentBottomView = new View(getContext());
                     currentBottomView.setVisibility(View.GONE);
                     mTouchResult = MOVE_NO_RESULT;
+                    ToastUtil.getLongToastByString(getContext(),"zuihouyiye");
 
-                    Toast.makeText(getContext(),"最后一页",Toast.LENGTH_SHORT).show();
                 }
             } else { //上一页
                 if(index > 1)

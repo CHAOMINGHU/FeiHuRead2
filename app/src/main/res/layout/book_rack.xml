@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/et_add"
+        android:hint="添加数据"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/et_delete"
+        android:hint="删除数据"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:id="@+id/btn_create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="create"
+        android:text="Create database" />
+
+    <Button
+        android:id="@+id/btn_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="add"
+        android:text="增" />
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="delete"
+        android:text="删" />
+    <Button
+        android:id="@+id/btn_query"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="query"
+        android:text="查" />
+    <GridView
+        android:id="@+id/gv"
+        android:layout_width=   "match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:stretchMode=  "columnWidth"
+        android:horizontalSpacing="0dp"
+        android:verticalSpacing="0dp"
+        android:background=  "#ffffff"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars= "none"
+        android:numColumns=  "3"
+        >
+
+    </GridView>
+
+</LinearLayout>

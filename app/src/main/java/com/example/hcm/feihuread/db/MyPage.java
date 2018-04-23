@@ -1,4 +1,4 @@
-package com.example.hcm.feihuread.read;
+package com.example.hcm.feihuread.db;
 
 import org.litepal.crud.DataSupport;
 

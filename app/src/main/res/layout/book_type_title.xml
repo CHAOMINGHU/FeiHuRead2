@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:orientation="horizontal">
-
+    card_view:cardBackgroundColor="#FFFFFF"
+    card_view:cardUseCompatPadding="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_centerInParent="true"
+    >
     <View
-        android:layout_width="20dp"
-        android:layout_height="match_parent"
-        android:backgroundTint="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/block"
         />
     <TextView
         android:id="@+id/book_type"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="标题"
-        android:textSize="26sp"
+        android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
         />
-</LinearLayout>
+</android.support.v7.widget.CardView>

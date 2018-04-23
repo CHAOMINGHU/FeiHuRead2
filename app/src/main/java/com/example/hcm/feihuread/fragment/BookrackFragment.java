@@ -1,57 +1,120 @@
 package com.example.hcm.feihuread.fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.Toast;
 
-import com.bigkoo.convenientbanner.ConvenientBanner;
-import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
-import com.bumptech.glide.Glide;
 import com.example.hcm.feihuread.R;
-import com.example.hcm.feihuread.popuwindow.CustomPopWindow;
-import com.example.hcm.feihuread.view.BannerView;
-import com.youth.banner.Banner;
+import com.example.hcm.feihuread.adapter.MyBookrackAdapter;
+import com.example.hcm.feihuread.db.MyBookrack;
+import com.example.hcm.feihuread.read.BookDetil;
+import com.example.hcm.feihuread.utils.ImageTools;
+import com.example.hcm.feihuread.utils.ToastUtil;
 
-import java.util.Arrays;
+import org.litepal.crud.DataSupport;
+
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * Created by hcm on 2018/3/22.
  */
 
 public class BookrackFragment extends Fragment {
-    CustomPopWindow popWindow = null;
-    CustomPopWindow popWindow2 = null;
-        private Banner banner;
-    BannerView bv;
-        //设置图片资源:url或本地资源
-        String[] images= new String[] {
-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwNDYwODczOC8xODA=",
-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwNTk4Njk5NC8xODA=",
-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwMzM1NDYzMS8xODA=",
-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwMzMwNzU2OC8xODA=",
-               };
 
-        //设置图片标题:自动对应
-        String[] titles=new String[]{"圣墟","我是至尊","一念永恒","不朽凡人"};
-
+    List<MyBookrack> datas;
+    MyBookrackAdapter adapter;
+    private Button btn_create, btn_add, btn_delete;
+    private EditText et_add, et_delete;
+    private GridView gv;
+    MyBookrack myBookrack;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.book_lunbo,null);
-        return  view;
+        View view = inflater.inflate(R.layout.book_rack, null);
+        return view;
     }
     @Override
     public void onStart() {
         super.onStart();
-       // initBanner();
-        bv=new BannerView(getLayoutInflater(),getView(),getContext(),titles,images);
-        bv.initBanner();
+
+        initViewId();
+        datas = DataSupport.findAll(MyBookrack.class);
+        createOnclick();
+        addOnclick();
+        deleteOnclick();
+        bindAdapter();
+    }
+    private void bindAdapter() {
+        adapter = new MyBookrackAdapter(getContext(), datas);
+        gv.setAdapter(adapter);
+    }
+
+    private void deleteOnclick() {
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataSupport.deleteAll(MyBookrack.class);
+                datas.clear();
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+
+    private void addOnclick() {
+        //获取图片的bitmap对象
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.xh);
+
+        final String s = ImageTools.convertIconToString(bitmap);
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                myBookrack = new MyBookrack();
+                myBookrack.setBookName("狗蛋");
+                myBookrack.setBookAuthor("qq");
+                myBookrack.setBookCover(s);
+                myBookrack.setBookHref("opp");
+                myBookrack.save();
+//               byte[] a=myBookrack.getBookCover().getBytes();
+                if (myBookrack.save()) {
+                    ToastUtil.getLongToastByString(getContext(), "加入书架数据库成功");
+                } else {
+                    ToastUtil.getLongToastByString(getContext(), "加入书架数据库失败");
+                }
+                datas.clear();
+                datas.addAll(DataSupport.findAll(MyBookrack.class));
+                String ss = datas.get(0).getBookCover();
+                byte[] c = ss.getBytes();
+                Log.e("TAG", c.length + "");
+                adapter.notifyDataSetChanged();
+
+            }
+        });
+    }
+
+    private void createOnclick() {
 
     }
+    private void initViewId() {
+        btn_add = getView().findViewById(R.id.btn_add);
+        btn_delete = getView().findViewById(R.id.btn_delete);
+        btn_create = getView().findViewById(R.id.btn_create);
+        et_add = getView().findViewById(R.id.et_add);
+        et_delete = getView().findViewById(R.id.et_delete);
+        gv = getView().findViewById(R.id.gv);
+    }
 }
-

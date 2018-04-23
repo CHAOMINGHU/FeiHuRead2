@@ -25,6 +25,9 @@
         <activity android:name=".activity.ReadPageActivity"/>
         <activity android:name=".activity.BookTypeWitchSelectedActivity"/>
         <activity android:name=".activity.SearchActivity"/>
+        <activity android:name=".activity.SearchLocalTxtActivity"/>
+        <activity android:name=".activity.ReadLocalBookActivity"/>
+
     </application>
 
 

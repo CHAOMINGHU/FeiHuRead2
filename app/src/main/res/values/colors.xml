@@ -4,5 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="clear">#00000000</color>
-    <color name="block">#60000000</color>
+    <color name="block">#CCCCCC</color>
+    <color name="write">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="a">#333333</color>
+
 </resources>

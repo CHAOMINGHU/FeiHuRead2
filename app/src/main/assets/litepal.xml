@@ -2,9 +2,11 @@
 <litepal>
     <dbname value="demo"/> <!--用于设定数据库名字-->
 
-    <version value="2"/><!--用于设定数据库的版本-->
+    <version value="6"/><!--用于设定数据库的版本-->
 
     <list> <!--用于设定数据库的映射关系-->
-        <mapping class="com.example.hcm.feihuread.read.MyPage"/>
+        <mapping class="com.example.hcm.feihuread.db.MyPage"/>
+        <mapping class="com.example.hcm.feihuread.db.MyBookrack"/>
+
     </list>
 </litepal>

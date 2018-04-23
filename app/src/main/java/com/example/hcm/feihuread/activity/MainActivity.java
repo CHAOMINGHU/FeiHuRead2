@@ -30,7 +30,7 @@ import com.example.hcm.feihuread.utils.ToastUtil;
 
 @SuppressLint("CutPasteId")
 @SuppressWarnings("unused")
-public class MainActivity extends FragmentActivity implements View.OnClickListener{
+public class MainActivity extends FragmentActivity implements View.OnClickListener {
     private ArrayList<Fragment> fragmentlist;
     private ViewPager mviewpager;
     private View viewbar;
@@ -38,6 +38,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     TextView pager1;
     TextView pager2;
     ImageView search;
+    ImageView mulu;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         pager2 = findViewById(R.id.id_page2);
         search = findViewById(R.id.iv_search);
         search.setOnClickListener((View.OnClickListener) this);
+        mulu = findViewById(R.id.mulu);
+        mulu.setOnClickListener(this);
         pager1.setOnClickListener(new txListner(0));
         pager2.setOnClickListener(new txListner(1));
     }
@@ -63,8 +66,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
 //        ToastUtil.getLongToastByString(this,"Fuck");
-        Intent intent =new Intent(this,SearchActivity.class);
-        startActivity(intent);
+        if (view == search) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
+        } else if (view == mulu) {
+            Intent intent = new Intent(this, SearchLocalTxtActivity.class);
+            startActivity(intent);
+        }
 
     }
 

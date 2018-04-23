@@ -2,28 +2,34 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/a"
+    android:paddingTop="30dp"
     android:orientation="horizontal"
-    android:layout_gravity="center_horizontal"
+    android:gravity="center"
     >
 
-    <ImageView
+    <!--<ImageView
 
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="15dp"
         android:src="@mipmap/back"
+        android:paddingBottom="10dp"
+
         />
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="220dp"
         android:src="@mipmap/download"
+        android:paddingBottom="10dp"
         />
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="20dp"
         android:src="@mipmap/more"
-        />
+        android:paddingBottom="10dp"
+        />-->
 </LinearLayout>

@@ -12,6 +12,17 @@
 
         android:background="@color/colorPrimary">
 
+        <ImageView
+            android:id="@+id/mulu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/iv_search"
+            android:layout_marginStart="13dp"
+            android:background="@drawable/img_bg_selector"
+            android:clickable="true"
+            android:src="@mipmap/mulu" />
         <LinearLayout
 
             android:layout_width="180dp"
@@ -74,6 +85,8 @@
         android:id="@+id/id_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:flipInterval="30"
         android:persistentDrawingCache="animation" />
 
