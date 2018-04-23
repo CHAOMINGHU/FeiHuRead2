@@ -54,7 +54,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     View recoverView ;
     View view1,v1;
     View view2,v2 ;
-    private static String textData;
+    private static String textData="";
     private String url;
     private String nextUrl;
     int index;
@@ -143,6 +143,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                         break;
                     case 2:
                         textData = msg.getData().getString("tc");
+                        if(textData!=null)
                         new ReadingThread().start();
                         // textContent.setText(textData);
                         break;
@@ -331,16 +332,17 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                 // in = assets.open("text.txt");
                 in = getStringStream(textData);
                 Charset charset = CharsetDetector.detect(in);
-                reader = new BufferedReader(new InputStreamReader(in, charset));
 
-                reader.read(buffer);
-                String s;
+                reader = new BufferedReader(new InputStreamReader(in, charset));
+               reader.read(buffer);
+
+              /*  String s;
                 sb = new StringBuffer();
                 while((s=reader.readLine()) != null){
-                    sb.append(s+"\n");
-                }
-                reader.close();
-                System.out.println(sb);
+                    sb.append(s+"\n");*/
+               // }
+
+                System.out.println(reader.toString());
 
                 mHandler.obtainMessage(MSG_DRAW_TEXT).sendToTarget();
             } catch (IOException e) {
@@ -415,6 +417,5 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         window.setFlags(flag, flag);
     }
-
 }
 
