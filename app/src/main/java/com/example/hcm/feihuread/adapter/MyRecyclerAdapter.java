@@ -269,7 +269,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             mTxtAuthor = itemView.findViewById(R.id.txt_autor);
             mTxtInTro = itemView.findViewById(R.id.txt_intro);
             cover = itemView.findViewById(R.id.cover);
-            cover.setScaleType(ImageView.ScaleType.FIT_XY);
         }
     }
 

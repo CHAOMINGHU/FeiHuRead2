@@ -71,7 +71,7 @@ public class BookrackFragment extends Fragment {
 
     private void addOnclick() {
         //获取图片的bitmap对象
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.xh);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.fucklayout);
 
         final String s = ImageTools.convertIconToString(bitmap);
         btn_add.setOnClickListener(new View.OnClickListener() {
