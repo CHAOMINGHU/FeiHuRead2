@@ -14,15 +14,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.adapter.MyLocalTxtAdapter;
 import com.example.hcm.feihuread.inter.MyItemClickListener;
-import com.example.hcm.feihuread.read.BookInfo;
-import com.hw.txtreaderlib.bean.TxtMsg;
-import com.hw.txtreaderlib.interfaces.ILoadListener;
-import com.hw.txtreaderlib.main.TxtReaderView;
+import com.example.hcm.feihuread.model.BookInfo;
 
 import java.io.BufferedReader;
 import java.io.File;

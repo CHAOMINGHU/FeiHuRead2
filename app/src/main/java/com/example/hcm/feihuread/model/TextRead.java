@@ -1,4 +1,4 @@
-package com.example.hcm.feihuread.read;
+package com.example.hcm.feihuread.model;
 
 public class TextRead
 {

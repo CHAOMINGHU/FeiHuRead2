@@ -10,9 +10,8 @@ import org.jsoup.select.Elements;
 
 
 import android.util.Log;
-import android.widget.TextView;
 
-import com.example.hcm.feihuread.read.BookDetail;
+import com.example.hcm.feihuread.model.BookDetail;
 
 public class GetNetTxtData {
     String URL = "http://www.biquge5200.com/";

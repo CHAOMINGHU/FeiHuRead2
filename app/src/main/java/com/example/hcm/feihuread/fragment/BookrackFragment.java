@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.adapter.MyBookrackAdapter;
 import com.example.hcm.feihuread.db.MyBookrack;
-import com.example.hcm.feihuread.read.BookDetil;
 import com.example.hcm.feihuread.utils.ImageTools;
 import com.example.hcm.feihuread.utils.ToastUtil;
 
 import org.litepal.crud.DataSupport;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**

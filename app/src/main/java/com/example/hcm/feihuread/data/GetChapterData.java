@@ -1,34 +1,15 @@
 package com.example.hcm.feihuread.data;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.w3c.dom.Text;
 
 
-
-
-
-
-
-import android.R.bool;
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Shader.TileMode;
-import android.os.AsyncTask;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
-import com.example.hcm.feihuread.read.TextRead;
+import com.example.hcm.feihuread.model.TextRead;
 import com.example.hcm.feihuread.utils.NetUtil;
 
 public class GetChapterData
@@ -57,7 +38,7 @@ public class GetChapterData
 			@SuppressWarnings({ "unused", "static-access" })
 			@Override
 			public void run()
-			{
+			{/**/
 				// TODO Auto-generated method stub
 				Document document = null;
 				tr=new TextRead();

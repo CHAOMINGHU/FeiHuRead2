@@ -8,10 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.hcm.feihuread.R;
-import com.example.hcm.feihuread.read.BookTypeAbout;
+import com.example.hcm.feihuread.model.BookTypeAbout;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2018/4/6 0006.

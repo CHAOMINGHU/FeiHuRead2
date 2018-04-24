@@ -122,20 +122,21 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         String title1 = "", cover1 = "", href1 = "";
         if (position < 5) {
                   if(position!=0){
-
-
                       title = datas.get(position-1).get("title").toString();
                       author = datas.get(position-1).get("author").toString();
                       intro = datas.get(position-1).get("intro").toString();
                       cover = datas.get(position-1).get("cover").toString();
-                      href = datas.get(position-1).get("href").toString();
+                     // href = datas.get(position-1).get("href").toString();
                   }
 
 
 
 
         } else {
-            title1 = datas.get(position).get("title1").toString();
+           if( datas.get(position-1).get("title1")!=null)
+            title1 = datas.get(position-1).get("title1").toString();
+
+            //href1=datas.get(position-1).get("href1").toString();
 //            cover1=datas.get(position).get("cover1").toString();
         }
         // Log.e("FUCK",title1);

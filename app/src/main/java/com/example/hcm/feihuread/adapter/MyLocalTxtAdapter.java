@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.inter.MyItemClickListener;
 
-import com.example.hcm.feihuread.read.*;
+import com.example.hcm.feihuread.model.*;
 
 import java.util.List;
 

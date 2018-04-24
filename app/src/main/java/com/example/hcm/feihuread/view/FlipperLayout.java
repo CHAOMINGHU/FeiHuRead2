@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.hcm.feihuread.utils.ToastUtil;
 
+import java.io.IOException;
+
 /**
  * Created by Administrator on 2018/4/2 0002.
  */
@@ -180,16 +182,20 @@ public class FlipperLayout extends ViewGroup {
                 //确定滑动方向
                 final int distance = startX - (int) event.getX();
                 if (mDirection == MOVE_NO_RESULT) {
-                    if (mListener.whetherHasNextPage() && distance > 0) { //左滑
-                        mDirection = MOVE_TO_LEFT;
-//                    } else if (mListener.whetherHasPreviousPage() && distance < 0) { //右滑
-//                        mDirection = MOVE_TO_RIGHT;
-//                    }
-                    } else if (index > 1 && distance < 0) { //右滑
-                        mDirection = MOVE_TO_RIGHT;
-                        //Toast.makeText(getContext(),"右滑",Toast.LENGTH_SHORT).show();
-//                       if(currentTopView!=currentBottomView)
-                        //     ToastUtil.getLongToastByString(getContext(),"前面没有页数");
+                    try {
+                        if (mListener.whetherHasNextPage() && distance > 0) { //左滑
+                            mDirection = MOVE_TO_LEFT;
+    //                    } else if (mListener.whetherHasPreviousPage() && distance < 0) { //右滑
+    //                        mDirection = MOVE_TO_RIGHT;
+    //                    }
+                        } else if (index > 1 && distance < 0) { //右滑
+                            mDirection = MOVE_TO_RIGHT;
+                            //Toast.makeText(getContext(),"右滑",Toast.LENGTH_SHORT).show();
+    //                       if(currentTopView!=currentBottomView)
+                            //     ToastUtil.getLongToastByString(getContext(),"前面没有页数");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
                 }
@@ -203,11 +209,21 @@ public class FlipperLayout extends ViewGroup {
 //
 //                }
 
-                if (mMode == MODE_NONE
-                        && ((mDirection == MOVE_TO_LEFT && mListener.whetherHasNextPage()) || (mDirection == MOVE_TO_RIGHT
-                        && index > 1))) {
-                    mMode = MODE_MOVE;
-                    //ToastUtil.getLongToastByString(getContext(),"前面没有页数");
+                try {
+                    if ((mMode == MODE_NONE ||mMode==MODE_MOVE)
+                            && ((mDirection == MOVE_TO_LEFT && mListener.whetherHasNextPage()) || (mDirection == MOVE_TO_RIGHT
+                            && index > 1))) {
+                        mMode = MODE_MOVE;
+                        //ToastUtil.getLongToastByString(getContext(),"前面没有页数");
+                    }
+                    else if( !mListener.whetherHasNextPage())
+                    {
+                        Log.e("W D FUCK","当前页面已经是最后一页");
+                    }else
+                        Log.e("W D FUCK","当前页面已经是第一页");
+                        //ToastUtil.getLongToastByString(getContext(),"前面没有页数");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 //Toast.makeText(getContext(),"边界",Toast.LENGTH_SHORT).show();
 
@@ -237,17 +253,23 @@ public class FlipperLayout extends ViewGroup {
                             mScrollerView.scrollTo(distance, 0);
                         } else {
                             mScrollerView.scrollTo(screenWidth + distance - startX, 0);
+                            ToastUtil.getLongToastByString(getContext(),"朝着右边走了");
                         }
                     } else {
+                        ToastUtil.getLongToastByString(getContext(),"前面没有页数");
                         mScrollerView.scrollTo(-distance, 0);
                         final int scrollX = mScrollerView.getScrollX();
 
-                        if (mDirection == MOVE_TO_LEFT && scrollX != 0 && mListener.whetherHasNextPage()) {
-                            mScrollerView.scrollTo(0, 0);
-                        } else if (mDirection == MOVE_TO_RIGHT && index > 1 && screenWidth != Math.abs(scrollX)) {
-                            // ToastUtil.getLongToastByString(getContext(),"前面没有页数");
-                            mScrollerView.scrollTo(-screenWidth, 0);
+                        try {
+                            if (mDirection == MOVE_TO_LEFT && scrollX != 0 && mListener.whetherHasNextPage()) {
+                                mScrollerView.scrollTo(0, 0);
+                            } else if (mDirection == MOVE_TO_RIGHT && index > 1 && screenWidth != Math.abs(scrollX)) {
+                                // ToastUtil.getLongToastByString(getContext(),"前面没有页数");
+                                mScrollerView.scrollTo(-screenWidth, 0);
 
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -364,8 +386,9 @@ public class FlipperLayout extends ViewGroup {
                     currentTopView.scrollTo(-screenWidth, 0);
                     currentTopView.setVisibility(View.GONE);
                     addView(currentTopView);
-                    Toast.makeText(getContext(),"第一页",Toast.LENGTH_SHORT).show();
+
                 } else {
+
                     currentTopView = mListener.createView(mTouchResult, index);
                     currentTopView.scrollTo(-screenWidth, 0);
                     addView(currentTopView);
@@ -427,7 +450,7 @@ public class FlipperLayout extends ViewGroup {
          *
          * @return
          */
-        boolean whetherHasNextPage();
+        boolean whetherHasNextPage() throws IOException;
     }
 
 }

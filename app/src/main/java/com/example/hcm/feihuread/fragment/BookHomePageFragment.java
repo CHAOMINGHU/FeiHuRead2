@@ -1,5 +1,6 @@
 package com.example.hcm.feihuread.fragment;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.hcm.feihuread.R;
@@ -21,6 +23,7 @@ import com.example.hcm.feihuread.activity.BookTypeWitchSelectedActivity;
 import com.example.hcm.feihuread.activity.ReadPageActivity;
 import com.example.hcm.feihuread.adapter.MyRecyclerAdapter;
 import com.example.hcm.feihuread.data.GetNetTxtData;
+import com.example.hcm.feihuread.utils.ToastUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,8 +49,8 @@ public class BookHomePageFragment extends Fragment {
     //存储数据的map
     Map<String, Object> map;
     //标题，作者，简介，图片链接
-    String title = "", author = "", intro = "", imgUrl = "";
-    String title1 = "", href = "", imgUrl1 = "";
+    String title = "", author = "", intro = "", imgUrl = "", href = "";
+    String title1 = "", href1 = "";
 
     private List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
     MyRecyclerAdapter adapter;
@@ -84,25 +87,28 @@ public class BookHomePageFragment extends Fragment {
                         public void onItemClick(int position) {
                             if (position < 5) {
                                 //这本书的url
-
                                 String url = list.get(position-1).get("href").toString();
                                 Log.e("FUCK THE URL:", url);
                                 //读取第一张的url
                                 getData(url, position);
-
-
-                            } else {
+                            } else if(5<=position&&position<12) {
                                 Intent intent = new Intent(getContext(), BookTypeWitchSelectedActivity.class);
                                 startActivity(intent);
-
+                                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            } else
+                            {
+                                //这本书的url
+                                String url = list.get(position-1).get("href1").toString();
+                                Log.e("FUCK THE URL:", url);
+                                //读取第一张的url
+                                getData(url, position);
                             }
 
-                            //  Toast.makeText(getContext(),"链接："+list.get(position).get("href"),Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onItemLongClick(int position) {
-                            Toast.makeText(getContext(), "长按了" + list.get(position), Toast.LENGTH_SHORT).show();
+                          ToastUtil.getLongToastByString(getContext(),list.get(position).toString());
                         }
                     });
 
@@ -110,11 +116,13 @@ public class BookHomePageFragment extends Fragment {
                 case 2:
 
                     title1 = msg.getData().getString("title1");
-
-                    //  imgUrl1=msg.getData().getString("cover1");
+                    href1=msg.getData().getString("href1");
                     //href=msg.getData().getString("href");
                     initNetData1();
-                    lv.setAdapter(adapter);
+
+
+
+                    adapter.notifyDataSetChanged();
 
                     break;
 
@@ -166,6 +174,7 @@ public class BookHomePageFragment extends Fragment {
                     intent.putExtra("a", nextHref);
                     // intent.putExtra("a","http://www.biquge5200.com/75_75597/146416975.html");
                     startActivity(intent);
+                    getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     nextHref = null;
                 }
 
@@ -194,9 +203,9 @@ public class BookHomePageFragment extends Fragment {
     }
 
     private void initNetData1() {
-        map = new HashMap<>();
+        map = new HashMap<String,Object>();
         map.put("title1", title1);
-        //  map.put("cover1",imgUrl1);
+        map.put("href1",href1);
         list.add(map);
         return;
     }
@@ -299,12 +308,12 @@ public class BookHomePageFragment extends Fragment {
             }
 
             @Override
-            public void getBookInfo1(String title1, String href) {
+            public void getBookInfo1(String title1, String href1) {
                 Message msg = handler.obtainMessage();
                 Bundle bundle = new Bundle();
                 bundle.putString("title1", title1);
-                bundle.putString("href", href);
-//                bundle.putString("cover1", cover1);
+                bundle.putString("href1", href1);
+              //  bundle.putString("cover1", cover1);
                 msg.setData(bundle);
                 msg.what = 2;
                 handler.sendMessage(msg);
@@ -317,5 +326,4 @@ public class BookHomePageFragment extends Fragment {
         });
 
     }
-
 }

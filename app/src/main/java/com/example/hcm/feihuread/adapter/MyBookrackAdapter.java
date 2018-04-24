@@ -1,12 +1,6 @@
 package com.example.hcm.feihuread.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +10,9 @@ import android.widget.TextView;
 
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.db.MyBookrack;
-import com.example.hcm.feihuread.read.BookDetil;
-import com.example.hcm.feihuread.read.BookInfo;
 import com.example.hcm.feihuread.utils.ImageTools;
 
 
-import org.litepal.crud.DataSupport;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.SoftReference;
 import java.util.List;
 
 /**

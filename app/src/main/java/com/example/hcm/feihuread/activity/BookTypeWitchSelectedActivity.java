@@ -1,24 +1,20 @@
 package com.example.hcm.feihuread.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.adapter.BookTypeWitchSelectedAdapter;
 import com.example.hcm.feihuread.data.GetBookTypeWhitchSelected;
-import com.example.hcm.feihuread.read.BookTypeAbout;
+import com.example.hcm.feihuread.model.BookTypeAbout;
 import com.example.hcm.feihuread.utils.DividerItemDecorations;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -57,11 +53,17 @@ public class BookTypeWitchSelectedActivity extends Activity {
         list.add(bt);
         return;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_type_whitch_selected);
-
         getDetailData();
         initView();
     }

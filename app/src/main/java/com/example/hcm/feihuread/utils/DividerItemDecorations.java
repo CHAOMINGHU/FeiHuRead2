@@ -18,7 +18,7 @@ public class DividerItemDecorations extends RecyclerView.ItemDecoration {
     public DividerItemDecorations() {
         mPaint=new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.parseColor("#6666FF"));
+        mPaint.setColor(Color.parseColor("#9966CC"));
     }
 
     //这个方法是针对每一个item的

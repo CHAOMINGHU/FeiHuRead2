@@ -1,4 +1,4 @@
-package com.example.hcm.feihuread.read;
+package com.example.hcm.feihuread.model;
 
 /**
  * Created by hcm on 2018/4/13.

@@ -64,6 +64,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     static boolean oneIsLayout;
     static MyHandler mHandler;
     static StringBuffer sb;
+    static InputStream in ;
     private static class  MyHandler extends  Handler
     {
         private WeakReference<ReadPageActivity> mActivity = null;
@@ -81,30 +82,19 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
             if(activity!=null){
                 switch (msg.what) {
                     case MSG_DRAW_TEXT:
-
-
                         buffer.position(0);
-
-                        //����һҳ���ı�
                         readView1.setText(buffer.toString());
-
-                        //���ڶ�ҳ���ı�
                         ViewTreeObserver vto1 = readView1.getViewTreeObserver();
                         vto1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
                             public void onGlobalLayout() {
                                 if (oneIsLayout)
                                     return;
-
                                 int charNum = readView1.getCharNum();
-
-
                                 MyPage page = new MyPage();
                                 page.setPageSize(charNum);
                                 page.setStartPosition(charNum);
                                 page.setId(1);
-
-                                //����һҳ�����ݴ洢�����ݿ��У���������ݲ�����
                                 if (isSavePage(1)) {
                                     page.update(1);
                                 } else {
@@ -117,8 +107,6 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                                 oneIsLayout = true;
                             }
                         });
-
-
                         ViewTreeObserver vto2 = readView2.getViewTreeObserver();
                         vto2.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
@@ -126,8 +114,6 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                                 int charNum = readView2.getCharNum();
                                 if (charNum == 0)
                                     return;
-
-                                //���ڶ�ҳ�����ݴ洢�����ݿ���, ��������ݲ�����
                                 MyPage page = new MyPage();
                                 page.setPageSize(charNum);
                                 page.setStartPosition(charNum + getStartPosition(1));
@@ -144,22 +130,14 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                     case 2:
                         textData = msg.getData().getString("tc");
                         if(textData!=null)
+                            in  = getStringStream(textData);
                         new ReadingThread().start();
                         // textContent.setText(textData);
                         break;
-
                 }
             }
-
         }
     }
-//    private Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//
-//        }
-//    };
-
     public static InputStream getStringStream(String sInputString) {
         if (sInputString != null && !sInputString.trim().equals("")) {
             try {
@@ -171,13 +149,9 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         }
         return null;
     }
-
-    //��ҳ�Ƿ�洢
     private static boolean isSavePage(int pageNo) {
         return DataSupport.find(MyPage.class, pageNo) != null;
     }
-
-    //��ȡ��ҳ�Ľ���λ��
     private static int getStartPosition(int pageNo) {
         if (pageNo < 1) {
 
@@ -215,7 +189,6 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
         Intent intent = getIntent();
         nextUrl = intent.getStringExtra("a");
-
         getReadContent();
         rootLayout.setOnTouchListener((View.OnTouchListener) this);
 
@@ -224,6 +197,12 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -275,11 +254,11 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     * 返回值是判断是否有下一章
     * */
     @Override
-    public boolean whetherHasNextPage() {
+    public boolean whetherHasNextPage() throws IOException {
 
         buffer.position(getStartPosition(index));
-        if (buffer.toString().length() < 40) {
-            ToastUtil.getLongToastByString(ReadPageActivity.this, "没有下一页了");
+        if (  buffer.toString().length() < 40) {
+            //ToastUtil.getLongToastByString(ReadPageActivity.this, "没有下一页了");
             return false;
 
         } else
@@ -301,11 +280,10 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         float mMiddleY=screenHight/2;
         float x= motionEvent.getX();
         float y=motionEvent.getY();
-        if(x>mMiddleX / 3 * 2 && x< (screenWidth -mMiddleX / 3 * 2 )
-                && y > mMiddleY / 2
-                && y < ( screenHight - mMiddleY / 2)
-                ){
-            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+
+            if(motionEvent.getAction()==MotionEvent.ACTION_UP ){
+                if(x>mMiddleX / 3 * 2 && x< (screenWidth -mMiddleX / 3 * 2 ) && y > mMiddleY / 3*2 && y < ( screenHight - mMiddleY /3* 2))
+                {
                 ToastUtil.getLongToastByString(this,"点击了"+index+"页");
                 if (v1.getVisibility() == View.VISIBLE && v2.getVisibility() == View.VISIBLE) {
                     v1.setVisibility(View.GONE);
@@ -314,15 +292,17 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                     v1.setVisibility(View.VISIBLE);
                     v2.setVisibility(View.VISIBLE);
                 }
-            }
-
-        }
-
+            }else{
+                    v1.setVisibility(View.GONE);
+                    v2.setVisibility(View.GONE);
+                }
+        }else
+            return false;
         return false;
     }
 
     private  static class ReadingThread extends Thread {
-        InputStream in = null;
+
        public BufferedReader reader = null;
         public void run() {
 
@@ -330,11 +310,11 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
             //AssetManager assets = getAssets();
             try {
                 // in = assets.open("text.txt");
-                in = getStringStream(textData);
+
                 Charset charset = CharsetDetector.detect(in);
 
                 reader = new BufferedReader(new InputStreamReader(in, charset));
-               reader.read(buffer);
+                reader.read(buffer);
 
               /*  String s;
                 sb = new StringBuffer();
