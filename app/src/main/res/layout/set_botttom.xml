@@ -42,7 +42,9 @@
             android:layout_marginRight="10dp"
             android:text="下一章"
             android:textColor="#FFFFCC"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:clickable="true"
+            />
     </LinearLayout>
 
     <LinearLayout

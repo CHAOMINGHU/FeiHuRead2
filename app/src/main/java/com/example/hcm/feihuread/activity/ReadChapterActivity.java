@@ -1,3 +1,4 @@
+/*
 package com.example.hcm.feihuread.activity;
 
 import java.util.ArrayList;
@@ -96,10 +97,12 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 		initByCallBack();
 		
 	}
-	/*
+	*/
+/*
 	 * ��ʼ����������
 	 * 
-	 * */
+	 * *//*
+
 	private void initCacheData()
 	{
 		
@@ -115,9 +118,11 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 		 
 	}
 	
-	/*
+	*/
+/*
 	 * ��ʼ����������
-	 */
+	 *//*
+
 	private void initNetData()
 	{
 //			if (txtChapter == null || txtChapter == "")
@@ -142,9 +147,11 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 			return;
 	}
 
-	/*
+	*/
+/*
 	 * ��ʼ���ص�����
-	 */
+	 *//*
+
 	private void initByCallBack()
 	{
 		GetChapterData data = new GetChapterData(this,"http://www.biquge5200.com/31_31746/12331189.html");
@@ -152,7 +159,7 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 		{
 			@Override
 			public void getResult(String txtData, String txtChapter,
-					boolean isFail, int i)
+					boolean isFail, int i,String nextUrl)
 			{
 				// txtContent.setText(txtData);
 				Message msg = handler.obtainMessage();
@@ -182,9 +189,11 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 			@Override
 			public void getChapters(String data){}});
 	}
-	/*
+	*/
+/*
 	 * ��ʼ��״̬��
-	 */
+	 *//*
+
 	@SuppressWarnings("unused")
 	private void initByTitleBar()
 	{
@@ -199,9 +208,11 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 		window.setFlags(flag, flag); // ���õ�ǰ����Ϊȫ����ʾ
 	}
 
-	/*
+	*/
+/*
 	 * ��ʼ����ͼid��ͼ
-	 */
+	 *//*
+
 	@SuppressLint("CutPasteId") private void initByIdView()
 	{
 		lv_chapters = (ListView) this.findViewById(R.id.lv_chapters);
@@ -213,9 +224,11 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 		lv_chapters.setOnItemClickListener(this);
 	}
 
-	/*
+	*/
+/*
 	 * ��������
-	 */
+	 *//*
+
 	public void save(View v)
 	{
 		
@@ -227,9 +240,11 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
     		Toast.makeText(ReadChapterActivity.this,  "��"+list.size()+"��"+ "����ɹ�",Toast.LENGTH_LONG).show();
         	mCache.put("c", list.size()+"", 300);
 	}
-	/*
+	*/
+/*
 	 * �������
-	 */
+	 *//*
+
 	public void clear(View v)
 	{
 
@@ -256,3 +271,4 @@ public class ReadChapterActivity extends Activity implements AdapterView.OnItemC
 	}
 	
 }
+*/

@@ -337,6 +337,8 @@ public class FlipperLayout extends ViewGroup {
         this.mListener = listener;
     }
 
+
+
     @Override
     public void computeScroll() {
         super.computeScroll();
@@ -371,7 +373,7 @@ public class FlipperLayout extends ViewGroup {
             } else { //上一页
                 if(index > 1)
                     index --;
-
+                //如果当前底部的视图为空，则移除
                 if (currentBottomView != null) {
                     removeView(currentBottomView);
 

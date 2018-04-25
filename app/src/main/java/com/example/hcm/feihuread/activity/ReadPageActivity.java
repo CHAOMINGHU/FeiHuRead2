@@ -19,6 +19,7 @@ package com.example.hcm.feihuread.activity;
         import android.view.Window;
         import android.view.WindowManager;
         import android.widget.PopupWindow;
+        import android.widget.TextView;
 
         import com.example.hcm.feihuread.R;
         import com.example.hcm.feihuread.data.GetChapterData;
@@ -37,6 +38,7 @@ package com.example.hcm.feihuread.activity;
         import java.io.IOException;
         import java.io.InputStream;
         import java.io.InputStreamReader;
+        import java.io.UnsupportedEncodingException;
         import java.lang.ref.WeakReference;
         import java.nio.CharBuffer;
         import java.nio.charset.Charset;
@@ -51,16 +53,18 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     FlipperLayout rootLayout;
     static ReadView readView1;
     static ReadView readView2;
+    TextView btn_next;
     View recoverView ;
     View view1,v1;
     View view2,v2 ;
     private static String textData="";
+    private static String txtUrl="";
     private String url;
     private String nextUrl;
-    int index;
+    static int index;
     String txt = "123";
     private static final int MSG_DRAW_TEXT = 1;
-    static CharBuffer buffer = CharBuffer.allocate(8000);
+    static CharBuffer buffer ;
     static boolean oneIsLayout;
     static MyHandler mHandler;
     static StringBuffer sb;
@@ -84,6 +88,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                     case MSG_DRAW_TEXT:
                         buffer.position(0);
                         readView1.setText(buffer.toString());
+                        Log.e("FUCK THE NEXTURL1" ,readView1.getText().toString());
                         ViewTreeObserver vto1 = readView1.getViewTreeObserver();
                         vto1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
@@ -103,7 +108,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
                                 buffer.position(charNum);
                                 readView2.setText(buffer.toString());
-
+                                Log.e("FUCK THE NEXTURL2" ,readView2.getText().toString());
                                 oneIsLayout = true;
                             }
                         });
@@ -129,10 +134,17 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                         break;
                     case 2:
                         textData = msg.getData().getString("tc");
+                        txtUrl=msg.getData().getString("txtUrl");
+                        //设置字符缓冲区
+                        buffer = CharBuffer.allocate(textData.length());
                         if(textData!=null)
-                            in  = getStringStream(textData);
+                            in  = getStringStream(textData.trim());
                         new ReadingThread().start();
                         // textContent.setText(textData);
+                        buffer.position(0);
+                        readView1.setText(buffer);
+                        readView2=readView1;
+
                         break;
                 }
             }
@@ -182,6 +194,8 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         view2 = LayoutInflater.from(ReadPageActivity.this).inflate(R.layout.view_new, null);
         v1=findViewById(R.id.mv1);
         v2=findViewById(R.id.mv2);
+        btn_next=findViewById(R.id.btn_next);
+        btn_next.setOnClickListener(this);
         rootLayout.initFlipperViews(ReadPageActivity.this, view2, view1, recoverView);
 
         readView1 = (ReadView) view1.findViewById(R.id.textview);
@@ -192,11 +206,19 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         getReadContent();
         rootLayout.setOnTouchListener((View.OnTouchListener) this);
 
+
     }
 
     @Override
     public void onClick(View v) {
+         if(v==btn_next)
+         {
+             nextUrl=txtUrl; //https://www.biquge5200.com/42_42714/16445334.html
 
+             Log.e("FUCK THE NEXTURL" ,txtUrl);
+             getReadContent();
+
+         }
     }
 
     @Override
@@ -213,11 +235,11 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         this.index = index;
         if (direction == FlipperLayout.TouchListener.MOVE_TO_LEFT) { //��һҳ
             buffer.position(getStartPosition(index));
-
             newView = LayoutInflater.from(this).inflate(R.layout.view_new, null);
             final ReadView readView = (ReadView) newView.findViewById(R.id.textview);
 
             readView.setText(buffer.toString());
+            Log.e("FUCK THE NEXTURL3" ,readView.getText().toString());
             a = buffer.toString();
             ViewTreeObserver vto2 = readView.getViewTreeObserver();
             vto2.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -251,7 +273,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     }
 
     /*
-    * 返回值是判断是否有下一章
+    * 返回值是判断是否有下一页
     * */
     @Override
     public boolean whetherHasNextPage() throws IOException {
@@ -259,6 +281,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         buffer.position(getStartPosition(index));
         if (  buffer.toString().length() < 40) {
             //ToastUtil.getLongToastByString(ReadPageActivity.this, "没有下一页了");
+
             return false;
 
         } else
@@ -284,7 +307,8 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
             if(motionEvent.getAction()==MotionEvent.ACTION_UP ){
                 if(x>mMiddleX / 3 * 2 && x< (screenWidth -mMiddleX / 3 * 2 ) && y > mMiddleY / 3*2 && y < ( screenHight - mMiddleY /3* 2))
                 {
-                ToastUtil.getLongToastByString(this,"点击了"+index+"页");
+              //  ToastUtil.getLongToastByString(this,"点击了"+index+"页");
+                    Log.e("FUCK ONCLICK","点击了"+index+"");
                 if (v1.getVisibility() == View.VISIBLE && v2.getVisibility() == View.VISIBLE) {
                     v1.setVisibility(View.GONE);
                     v2.setVisibility(View.GONE);
@@ -292,10 +316,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                     v1.setVisibility(View.VISIBLE);
                     v2.setVisibility(View.VISIBLE);
                 }
-            }else{
-                    v1.setVisibility(View.GONE);
-                    v2.setVisibility(View.GONE);
-                }
+            }
         }else
             return false;
         return false;
@@ -313,17 +334,17 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
                 Charset charset = CharsetDetector.detect(in);
 
-                reader = new BufferedReader(new InputStreamReader(in, charset));
-                reader.read(buffer);
+                reader = new BufferedReader(new InputStreamReader(in,charset));
 
-              /*  String s;
+               reader.read(buffer);
+               // buffer.put(textData);
+
+           /*   String s;
                 sb = new StringBuffer();
                 while((s=reader.readLine()) != null){
-                    sb.append(s+"\n");*/
-               // }
-
-                System.out.println(reader.toString());
-
+                    sb.append(s+"\n");
+               }
+                System.out.println("READ: "+reader.toString()+"\n Buff: "+buffer.toString()+"\n SB: "+sb.toString());*/
                 mHandler.obtainMessage(MSG_DRAW_TEXT).sendToTarget();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -358,12 +379,13 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
             @Override
             public void getResult(String txtData, String txtChapter, boolean isFail,
-                                  int time) {
+                                  int time,String nextUrl) {
                 // TODO Auto-generated method stub
 
                 Message msg = mHandler.obtainMessage();
                 Bundle bundle = new Bundle();
                 bundle.putString("tc", txtData);
+                bundle.putString("txtUrl",nextUrl);
                 msg.setData(bundle);
                 msg.what = 2;
                 mHandler.sendMessage(msg);
@@ -397,5 +419,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         window.setFlags(flag, flag);
     }
+
+
 }
 

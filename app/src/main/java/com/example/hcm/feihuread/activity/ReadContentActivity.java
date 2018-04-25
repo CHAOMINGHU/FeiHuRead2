@@ -1,3 +1,4 @@
+/*
 package com.example.hcm.feihuread.activity;
 
 
@@ -19,11 +20,13 @@ import android.widget.Toast;
 
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.data.GetChapterData;
+*/
 /*
 * 1.ReadContent 需要获得两个数据(1.文本内容  2.下一章的超链接)
 * 2.默认加载第一章后，ScrollView滑动到底部，将下一章的超链接传进getChapterData，用StringBulider将字符串拼接展示作为新的文本内容，返回第一步
 *
-* */
+* *//*
+
 public class ReadContentActivity extends Activity implements View.OnTouchListener
 {
 	private String textData;
@@ -121,7 +124,7 @@ public class ReadContentActivity extends Activity implements View.OnTouchListene
 
 			@Override
 			public void getResult(String txtData, String txtChapter, boolean isFail,
-					int time)
+					int time,String nextUrl)
 			{
 				// TODO Auto-generated method stub
 				Message msg=handler.obtainMessage();
@@ -148,9 +151,11 @@ public class ReadContentActivity extends Activity implements View.OnTouchListene
 			}
 		});
 	}
-	/*
+	*/
+/*
 	 * ��ʼ��״̬��
-	 */
+	 *//*
+
 	private void initByTitleBar()
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -187,3 +192,4 @@ public class ReadContentActivity extends Activity implements View.OnTouchListene
 		return false;
 	}
 }
+*/
