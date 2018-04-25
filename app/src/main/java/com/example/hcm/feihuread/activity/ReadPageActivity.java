@@ -217,7 +217,8 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
              Log.e("FUCK THE NEXTURL" ,txtUrl);
              getReadContent();
-
+             rootLayout.removeAllViews();
+             rootLayout.initFlipperViews(ReadPageActivity.this, view2, view1, recoverView);
          }
     }
 

@@ -337,7 +337,9 @@ public class FlipperLayout extends ViewGroup {
         this.mListener = listener;
     }
 
+    public void setCurrentShowView(){
 
+    }
 
     @Override
     public void computeScroll() {
