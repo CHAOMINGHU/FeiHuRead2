@@ -1,70 +1,71 @@
 package com.example.hcm.feihuread.adapter;
 
-import java.util.List;
-import java.util.Map;
-
-import com.example.hcm.feihuread.R;
-
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class BookChapterAdapter extends BaseAdapter
-{
+import com.example.hcm.feihuread.R;
+import com.example.hcm.feihuread.model.BookChapterDetail;
+import com.example.hcm.feihuread.model.BookTypeAbout;
 
-	private List<Map<String, Object>> datas;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2018/4/6 0006.
+ */
+
+public class BookChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+	private List<BookChapterDetail> datas;
 	private Context mContext;
-	 public BookChapterAdapter(List<Map<String, Object>> datas, Context mContext) {  
-	        this.datas = datas;  
-	        this.mContext = mContext;  
-	    }  
+
+	//自定义监听事件
+	public static interface OnRecyclerViewItemClickListener {
+		void onItemClick(View view);
+		void onItemLongClick(View view);
+	}
+	private OnRecyclerViewItemClickListener mOnItemClickListener = null;
+	public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+		mOnItemClickListener = listener;
+	}
+	//适配器初始化
+	public BookChapterAdapter(Context context,List<BookChapterDetail> datas) {
+		mContext=context;
+		this.datas=datas;
+	}
 
 	@Override
-	public int getCount()
-	{
-		// TODO Auto-generated method stub
+	public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		View view = null;
+		RecyclerView.ViewHolder viewHolder = null;
+		view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_chapters,parent, false);
+		viewHolder = new VHTYPE(view);
+		return viewHolder;
+	}
+
+	@Override
+	public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+		String chapterTitle=datas.get(position).getCurrentChapterTitle();
+		BookChapterAdapter.VHTYPE vh = (BookChapterAdapter.VHTYPE) holder;
+		vh.mChapterTitle.setText(chapterTitle.trim());
+	}
+
+	@Override
+	public int getItemCount() {
 		return datas.size();
 	}
 
-	@Override
-	public Object getItem(int position)
-	{
-		// TODO Auto-generated method stub
-		return datas.get(position);
-	}
+	public static class VHTYPE extends RecyclerView.ViewHolder {
+		TextView mChapterTitle;
 
-	@Override
-	public long getItemId(int position)
-	{
-		// TODO Auto-generated method stub
-		return position;
-	}
+		// ImageView mChapterTitle;
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
-	{
-		final ViewHolder holder;
-		if(convertView==null)
-		{
-			//ʹ���Զ�����б�������Ϊlayout
-			convertView=LayoutInflater.from(mContext).inflate(R.layout.book_chapters, null);
-			//����findview�Ĵ���
-			holder=new ViewHolder();
-			//��ʼ�����ֵ�Ԫ��
-			holder.mTextView=(TextView) convertView.findViewById(R.id.txt_content);
-		    convertView.setTag(holder);
+		public VHTYPE(View itemView) {
+			super(itemView);
+			mChapterTitle = (TextView) itemView.findViewById(R.id.txt_content);
 		}
-		else
-			holder=(ViewHolder) convertView.getTag();
-		//�Ӵ�����������ṩ���ݲ��Ұ󶨵�ָ����view��
-		holder.mTextView.setText(datas.get(position).get("chapters").toString());
-		return convertView;
 	}
-	static class ViewHolder
-	{
-		TextView mTextView;
-	}
+
 }

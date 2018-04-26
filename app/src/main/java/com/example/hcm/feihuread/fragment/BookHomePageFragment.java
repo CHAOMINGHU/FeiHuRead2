@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,17 +22,23 @@ import android.widget.Toast;
 import com.example.hcm.feihuread.R;
 import com.example.hcm.feihuread.activity.BookTypeWitchSelectedActivity;
 import com.example.hcm.feihuread.activity.ReadPageActivity;
+import com.example.hcm.feihuread.adapter.BookChapterAdapter;
 import com.example.hcm.feihuread.adapter.MyRecyclerAdapter;
 import com.example.hcm.feihuread.data.GetNetTxtData;
+import com.example.hcm.feihuread.model.BookChapterDetail;
 import com.example.hcm.feihuread.utils.ToastUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +63,9 @@ public class BookHomePageFragment extends Fragment {
     MyRecyclerAdapter adapter;
     View v;
     String nextHref;
-
-
+    String allHref;
+    List<BookChapterDetail> datas=new ArrayList<>();
+    BookChapterDetail bcdetail;
     Handler handler = new Handler(new Handler.Callback() {
 
         @Override
@@ -88,7 +96,7 @@ public class BookHomePageFragment extends Fragment {
                             if (position < 5) {
                                 //这本书的url
                                 String url = list.get(position-1).get("href").toString();
-                                Log.e("FUCK THE URL:", url);
+                                Log.e("点击了一本书:", url);
                                 //读取第一张的url
                                 getData(url, position);
                             } else if(5<=position&&position<12) {
@@ -153,7 +161,6 @@ public class BookHomePageFragment extends Fragment {
                                 .timeout(5000).get();
                         //flag = false;
                     } catch (IOException e) {
-                        // TODO �Զ����ɵ� catch ��
                         e.printStackTrace();
                         flag = true;
                     }
@@ -161,18 +168,28 @@ public class BookHomePageFragment extends Fragment {
 
                 // 拿到所有章节  Elements eid = document.select("#list dl dt:nth-of-type(2)~dd");
                 //拿到第一个章节
+                Elements eids = document.select("#list dl dt:nth-of-type(2)~dd");
+                for( Element element:eids)
+                {
+                    Node n= element.child(0).childNode(0);
+                    allHref=eids.select("a").attr("href");
+                    bcdetail=new BookChapterDetail();
+                    bcdetail.setCurrentChapterHref(allHref);
+                    bcdetail.setCurrentChapterTitle(n.toString());
+                    datas.add(bcdetail);
+                   // Log.e("章节列表： "+n.toString(),allHref);
+                }
+
+
                 Elements eid = document.select("#list dl dt:nth-of-type(2)+dd");
                 nextHref = eid.select("a").attr("href");
-                //String next=eid.text().toString();
-
-                // Log.e("FUCK", "第一章链接:" + nextHref);
-                //                Looper.prepare();
-                //Toast.makeText(mContext,nextHref,Toast.LENGTH_LONG).show();
-                //                Looper.loop();
                 if (nextHref != null) {
                     Intent intent = new Intent(mContext, ReadPageActivity.class);
+
+                    intent.putExtra("datas", (Serializable) datas);
                     intent.putExtra("a", nextHref);
                     // intent.putExtra("a","http://www.biquge5200.com/75_75597/146416975.html");
+
                     startActivity(intent);
                     getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     nextHref = null;
@@ -313,6 +330,7 @@ public class BookHomePageFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("title1", title1);
                 bundle.putString("href1", href1);
+                System.out.println("FUCK THE BOOK href:"+href1);
               //  bundle.putString("cover1", cover1);
                 msg.setData(bundle);
                 msg.what = 2;

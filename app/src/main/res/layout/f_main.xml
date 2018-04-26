@@ -1,4 +1,9 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout android:id="@+id/dl_layout"
+    android:background="@android:color/holo_orange_light"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
@@ -42,4 +47,11 @@
 
 
 </FrameLayout>
-
+    <!--后定义侧滑的布局 -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lv_menu"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:background="@color/write"
+        android:layout_gravity="left" />
+</android.support.v4.widget.DrawerLayout>

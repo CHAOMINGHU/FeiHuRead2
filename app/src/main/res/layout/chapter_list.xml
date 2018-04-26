@@ -11,8 +11,8 @@
       android:layout_height="320dp"
      
       >
-  </ListView>
-    <TextView
+     </ListView>
+  <!--  <TextView
         android:id="@+id/txt_num"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         android:clickable="true"
         android:onClick="clear"
         android:text="清楚緩存" />
-    
+    -->
 
  
     

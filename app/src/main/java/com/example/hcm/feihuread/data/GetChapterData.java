@@ -28,7 +28,7 @@ public class GetChapterData {
 /**
  * JSOUP爬取步骤
  * 1.获得当前章节链接
- * 2.根据当前链接自动爬取下面五章
+ * 2.根据当前链接自动爬取下章
  */
         new Thread(new Runnable() {
             @SuppressWarnings({"unused", "static-access"})
@@ -50,7 +50,7 @@ public class GetChapterData {
                                     .timeout(5000).get();
                             //flag = false;
                         } catch (IOException e) {
-                            // TODO �Զ����ɵ� catch ��
+
                             e.printStackTrace();
                             NetUtil net = new NetUtil();
                             if (net.isNetworkAvalible(context) == true)
@@ -93,18 +93,16 @@ public class GetChapterData {
     }
 
 
-    // ���ݽ���ص��ӿ�
     public interface MyResult {
-        // ���ص��ı�����
+
         void getResult(String txtData, String txtChapter, boolean isFail, int time,String nextUrl);
 
-        // ����ʧ��
         void onFail(boolean isFail);
 
-        // ���ؽ���
+
         void getProgress(int i);
 
-        //�����½�����
+
         void getChapters(String data);
 
     }

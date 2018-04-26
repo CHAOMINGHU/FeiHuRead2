@@ -2,9 +2,9 @@ package com.example.hcm.feihuread.model;
 
 public class BookDetail
 {
-	String title;    //����
-	String author;   //����
-	String intro;    //���
+	String title;    //标题
+	String author;   //作者
+	String intro;    //简介
 	public String getTitle()
 	{
 		return title;

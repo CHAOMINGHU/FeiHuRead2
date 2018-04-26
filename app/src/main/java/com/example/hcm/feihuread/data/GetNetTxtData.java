@@ -41,7 +41,7 @@ public class GetNetTxtData {
                                 .timeout(5000).get();
                         //flag = false;
                     } catch (IOException e) {
-                        // TODO �Զ����ɵ� catch ��
+
                         e.printStackTrace();
                         flag = true;
                     }
@@ -78,24 +78,6 @@ public class GetNetTxtData {
                 for (Element link : links) {
                     href1 = link.attr("href");
                     String title1 = link.text().trim();
-                    //System.out.println(href);
-//                    Log.e("TAG", "网址：" + href1);
-//                    Log.e("TAG", "书名：" + title1);
-                   /* try {
-                        document1 = Jsoup
-                                .connect(href)
-                                .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31")
-                                .timeout(2000).get();
-                    } catch (IOException e) {
-                        // TODO �Զ����ɵ� catch ��
-                        e.printStackTrace();
-
-                    }
-                    if (document1.getElementById("fmimg") == null) {
-                        Log.e("TAG", "nsiofhasoifhaoifnfason：" + "88行为空");
-                        return;
-                    }
-                    Element id = document1.getElementById("fmimg");*/
                     data.getBookInfo1(title1, href1);
                 }
             }

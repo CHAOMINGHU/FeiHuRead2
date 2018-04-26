@@ -1,0 +1,1860 @@
+Index: app/src/main/res/drawable/gv_item_selector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/gv_item_selector.xml	(revision )
++++ app/src/main/res/drawable/gv_item_selector.xml	(revision )
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:drawable="@color/colorPrimaryDark" android:state_pressed="false"/>
++    <item android:drawable="@color/colorAccent" android:state_pressed="true"/>
++</selector>
+\ No newline at end of file
+Index: app/src/main/assets/litepal.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/assets/litepal.xml	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/assets/litepal.xml	(revision )
+@@ -2,9 +2,11 @@
+ <litepal>
+     <dbname value="demo"/> <!--用于设定数据库名字-->
+ 
+-    <version value="2"/><!--用于设定数据库的版本-->
++    <version value="6"/><!--用于设定数据库的版本-->
+ 
+     <list> <!--用于设定数据库的映射关系-->
+-        <mapping class="com.example.hcm.feihuread.read.MyPage"/>
++        <mapping class="com.example.hcm.feihuread.db.MyPage"/>
++        <mapping class="com.example.hcm.feihuread.db.MyBookrack"/>
++
+     </list>
+ </litepal>
+\ No newline at end of file
+Index: app/src/main/java/com/example/hcm/feihuread/db/MyBookrack.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/db/MyBookrack.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/db/MyBookrack.java	(revision )
+@@ -0,0 +1,49 @@
++package com.example.hcm.feihuread.db;
++
++import org.litepal.crud.DataSupport;
++
++/**
++ * Created by hcm on 2018/4/17.
++ */
++
++public class MyBookrack extends DataSupport {
++    String bookName;
++    String bookAuthor;
++    String bookHref;
++    String bookCover;
++
++    public String getBookCover() {
++        return bookCover;
++    }
++
++    public void setBookCover(String bookCover) {
++        this.bookCover = bookCover;
++    }
++
++    public String getBookName() {
++        return bookName;
++    }
++
++    public void setBookName(String bookName) {
++        this.bookName = bookName;
++    }
++
++
++    public String getBookAuthor() {
++        return bookAuthor;
++    }
++
++    public void setBookAuthor(String bookAuthor) {
++        this.bookAuthor = bookAuthor;
++    }
++
++    public String getBookHref() {
++        return bookHref;
++    }
++
++    public void setBookHref(String bookHref) {
++        this.bookHref = bookHref;
++    }
++
++
++}
+Index: app/src/main/java/com/example/hcm/feihuread/inter/MyItemClickListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/inter/MyItemClickListener.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/inter/MyItemClickListener.java	(revision )
+@@ -0,0 +1,11 @@
++package com.example.hcm.feihuread.inter;
++
++import android.view.View;
++
++/**
++ * Created by hcm on 2018/4/18.
++ */
++
++public interface MyItemClickListener {
++    public void onItemClick(View view, int postion);
++}
+Index: app/src/main/res/layout/book_rack.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/book_rack.xml	(revision )
++++ app/src/main/res/layout/book_rack.xml	(revision )
+@@ -0,0 +1,61 @@
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:orientation="vertical">
++
++
++    <EditText
++        android:id="@+id/et_add"
++        android:hint="添加数据"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content" />
++    <EditText
++        android:id="@+id/et_delete"
++        android:hint="删除数据"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content" />
++
++
++    <Button
++        android:id="@+id/btn_create"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:onClick="create"
++        android:text="Create database" />
++
++    <Button
++        android:id="@+id/btn_add"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:onClick="add"
++        android:text="增" />
++
++    <Button
++        android:id="@+id/btn_delete"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:onClick="delete"
++        android:text="删" />
++    <Button
++        android:id="@+id/btn_query"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:onClick="query"
++        android:text="查" />
++    <GridView
++        android:id="@+id/gv"
++        android:layout_width=   "match_parent"
++        android:layout_height="wrap_content"
++        android:clickable="true"
++        android:stretchMode=  "columnWidth"
++        android:horizontalSpacing="0dp"
++        android:verticalSpacing="0dp"
++        android:background=  "#ffffff"
++        android:listSelector="@android:color/transparent"
++        android:scrollbars= "none"
++        android:numColumns=  "3"
++        >
++
++    </GridView>
++
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/hcm/feihuread/activity/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/activity/MainActivity.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/activity/MainActivity.java	(revision )
+@@ -30,7 +30,7 @@
+ 
+ @SuppressLint("CutPasteId")
+ @SuppressWarnings("unused")
+-public class MainActivity extends FragmentActivity implements View.OnClickListener{
++public class MainActivity extends FragmentActivity implements View.OnClickListener {
+     private ArrayList<Fragment> fragmentlist;
+     private ViewPager mviewpager;
+     private View viewbar;
+@@ -38,6 +38,7 @@
+     TextView pager1;
+     TextView pager2;
+     ImageView search;
++    ImageView mulu;
+ 
+     @Override
+     protected void onCreate(@Nullable Bundle savedInstanceState) {
+@@ -56,6 +57,8 @@
+         pager2 = findViewById(R.id.id_page2);
+         search = findViewById(R.id.iv_search);
+         search.setOnClickListener((View.OnClickListener) this);
++        mulu = findViewById(R.id.mulu);
++        mulu.setOnClickListener(this);
+         pager1.setOnClickListener(new txListner(0));
+         pager2.setOnClickListener(new txListner(1));
+     }
+@@ -63,8 +66,13 @@
+     @Override
+     public void onClick(View view) {
+ //        ToastUtil.getLongToastByString(this,"Fuck");
+-        Intent intent =new Intent(this,SearchActivity.class);
+-        startActivity(intent);
++        if (view == search) {
++            Intent intent = new Intent(this, SearchActivity.class);
++            startActivity(intent);
++        } else if (view == mulu) {
++            Intent intent = new Intent(this, SearchLocalTxtActivity.class);
++            startActivity(intent);
++        }
+ 
+     }
+ 
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/build.gradle	(revision )
+@@ -39,4 +39,6 @@
+     implementation files('libs/cpdetector_1.0.10.jar')
+     implementation files('libs/jargs-1.0.jar')
+     implementation files('libs/litepal-1.3.0-src.jar')
++
++    implementation 'com.github.bifan-wei:HwTxtReader:V1.1'
+ }
+Index: app/src/main/java/com/example/hcm/feihuread/adapter/MyBookrackAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/adapter/MyBookrackAdapter.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/adapter/MyBookrackAdapter.java	(revision )
+@@ -0,0 +1,101 @@
++package com.example.hcm.feihuread.adapter;
++
++import android.content.Context;
++import android.graphics.Bitmap;
++import android.graphics.BitmapFactory;
++import android.graphics.ImageFormat;
++import android.graphics.Rect;
++import android.graphics.YuvImage;
++import android.util.Base64;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.BaseAdapter;
++import android.widget.ImageView;
++import android.widget.TextView;
++
++import com.example.hcm.feihuread.R;
++import com.example.hcm.feihuread.db.MyBookrack;
++import com.example.hcm.feihuread.read.BookDetil;
++import com.example.hcm.feihuread.read.BookInfo;
++import com.example.hcm.feihuread.utils.ImageTools;
++
++
++import org.litepal.crud.DataSupport;
++
++import java.io.ByteArrayInputStream;
++import java.io.ByteArrayOutputStream;
++import java.io.IOException;
++import java.io.InputStream;
++import java.lang.ref.SoftReference;
++import java.util.List;
++
++/**
++ * Created by hcm on 2018/3/26.
++ */
++
++public class MyBookrackAdapter extends BaseAdapter
++{
++    private LayoutInflater mInflater;
++    private Context mContext;
++    private List<MyBookrack> mDatas;
++
++    public MyBookrackAdapter(Context context, List<MyBookrack> mDatas)
++    {
++        mInflater = LayoutInflater.from(context);
++        this.mContext = context;
++        this.mDatas = mDatas;
++    }
++
++    @Override
++    public int getCount()
++    {
++        return mDatas.size();
++    }
++
++    @Override
++    public Object getItem(int position)
++    {
++        return mDatas.get(position);
++    }
++
++    @Override
++    public long getItemId(int position)
++    {
++        return position;
++    }
++
++    @Override
++    public View getView(int position, View convertView, ViewGroup parent)
++    {
++        ViewHolder viewHolder = null;
++        if (convertView == null)
++        {
++            convertView = mInflater.inflate(R.layout.book_rack_list_item, parent,
++                    false);
++            viewHolder = new ViewHolder();
++            viewHolder.mTextView = (TextView) convertView
++                    .findViewById(R.id.item_text);
++           viewHolder.mImageView=convertView.findViewById(R.id.item_img);
++            convertView.setTag(viewHolder);
++        } else
++        {
++            viewHolder = (ViewHolder) convertView.getTag();
++        }
++            viewHolder.mTextView.setText( mDatas.get(position).getBookName());
++            String imgs=mDatas.get(position).getBookCover();
++
++
++            viewHolder.mImageView.setImageBitmap(ImageTools.convertStringToIcon(imgs));
++
++
++        return convertView;
++    }
++
++    private final class ViewHolder
++    {
++        TextView mTextView;
++        ImageView mImageView;
++    }
++
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/hcm/feihuread/data/GetSearchData.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/data/GetSearchData.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/data/GetSearchData.java	(revision )
+@@ -4,6 +4,8 @@
+ import android.text.TextUtils;
+ import android.util.Log;
+ 
++import com.example.hcm.feihuread.inter.SearchDataFunction;
++
+ import org.jsoup.Jsoup;
+ import org.jsoup.nodes.Document;
+ import org.jsoup.nodes.Element;
+Index: app/src/main/java/com/example/hcm/feihuread/read/BookDetil.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/read/BookDetil.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/read/BookDetil.java	(revision )
+@@ -0,0 +1,66 @@
++package com.example.hcm.feihuread.read;
++
++import java.io.Serializable;
++
++/**
++ * Created by hcm on 2018/3/26.
++ */
++
++public class BookDetil implements Serializable{
++    private int id;
++    private String bookName;
++    private String author;
++    private String cover;
++    private String href;
++
++
++
++    public int getId() {
++
++        return id;
++    }
++
++    public void setId(int id) {
++        this.id = id;
++    }
++
++    public String getBookName() {
++        return bookName;
++    }
++
++    public void setBookName(String bookName) {
++        this.bookName = bookName;
++    }
++
++    public String getAuthor() {
++        return author;
++    }
++
++    public void setAuthor(String author) {
++        this.author = author;
++    }
++
++    public String getCover() {
++        return cover;
++    }
++
++    public void setCover(String cover) {
++        this.cover = cover;
++    }
++
++    public String getHref() {
++        return href;
++    }
++
++    public void setHref(String href) {
++        this.href = href;
++    }
++public BookDetil(){}
++    public BookDetil(int id, String bookName, String author, String cover, String href) {
++        this.id=id;
++        this.bookName = bookName;
++        this.author = author;
++        this.cover = cover;
++        this.href = href;
++    }
++}
+Index: app/src/main/java/com/example/hcm/feihuread/activity/ReadPageActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/activity/ReadPageActivity.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/activity/ReadPageActivity.java	(revision )
+@@ -23,7 +23,7 @@
+ import com.example.hcm.feihuread.R;
+ import com.example.hcm.feihuread.data.GetChapterData;
+ import com.example.hcm.feihuread.popuwindow.CustomPopWindow;
+-import com.example.hcm.feihuread.read.MyPage;
++import com.example.hcm.feihuread.db.MyPage;
+ import com.example.hcm.feihuread.utils.CharsetDetector;
+ import com.example.hcm.feihuread.utils.ToastUtil;
+ import com.example.hcm.feihuread.view.FlipperLayout;
+Index: app/src/main/java/com/example/hcm/feihuread/activity/SearchActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/activity/SearchActivity.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/activity/SearchActivity.java	(revision )
+@@ -3,7 +3,6 @@
+ import android.os.Bundle;
+ import android.os.Handler;
+ import android.os.Message;
+-import android.support.annotation.Nullable;
+ import android.support.v4.view.MenuItemCompat;
+ import android.support.v7.app.AppCompatActivity;
+ import android.support.v7.widget.SearchView;
+@@ -16,7 +15,7 @@
+ 
+ import com.example.hcm.feihuread.R;
+ import com.example.hcm.feihuread.data.GetSearchData;
+-import com.example.hcm.feihuread.data.SearchDataFunction;
++import com.example.hcm.feihuread.inter.SearchDataFunction;
+ 
+ import java.lang.ref.WeakReference;
+ import java.util.ArrayList;
+Index: app/src/main/java/com/example/hcm/feihuread/read/BookInfo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/read/BookInfo.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/read/BookInfo.java	(revision )
+@@ -0,0 +1,25 @@
++package com.example.hcm.feihuread.read;
++
++/**
++ * Created by hcm on 2018/4/13.
++ */
++
++public class BookInfo {
++    private String bookName;
++
++    public BookInfo() {
++
++    }
++
++    public String getBookName() {
++        return bookName;
++    }
++
++    public void setBookName(String bookName) {
++        this.bookName = bookName;
++    }
++
++    public BookInfo(String bookName) {
++        this.bookName = bookName;
++    }
++}
+Index: app/src/main/java/com/example/hcm/feihuread/fragment/BookrackFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/fragment/BookrackFragment.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/fragment/BookrackFragment.java	(revision )
+@@ -1,57 +1,120 @@
+ package com.example.hcm.feihuread.fragment;
+ 
++import android.graphics.Bitmap;
++import android.graphics.BitmapFactory;
+ import android.os.Bundle;
+ import android.support.annotation.Nullable;
+ import android.support.v4.app.Fragment;
++import android.util.Base64;
++import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+-import android.widget.ImageView;
++import android.widget.Button;
++import android.widget.EditText;
++import android.widget.GridView;
+ import android.widget.Toast;
+ 
+-import com.bigkoo.convenientbanner.ConvenientBanner;
+-import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
+-import com.bumptech.glide.Glide;
+ import com.example.hcm.feihuread.R;
+-import com.example.hcm.feihuread.popuwindow.CustomPopWindow;
+-import com.example.hcm.feihuread.view.BannerView;
+-import com.youth.banner.Banner;
++import com.example.hcm.feihuread.adapter.MyBookrackAdapter;
++import com.example.hcm.feihuread.db.MyBookrack;
++import com.example.hcm.feihuread.read.BookDetil;
++import com.example.hcm.feihuread.utils.ImageTools;
++import com.example.hcm.feihuread.utils.ToastUtil;
+ 
+-import java.util.Arrays;
++import org.litepal.crud.DataSupport;
++
++import java.io.ByteArrayOutputStream;
++import java.io.UnsupportedEncodingException;
++import java.util.List;
+ 
+ /**
+  * Created by hcm on 2018/3/22.
+  */
+ 
+ public class BookrackFragment extends Fragment {
+-    CustomPopWindow popWindow = null;
+-    CustomPopWindow popWindow2 = null;
+-        private Banner banner;
+-    BannerView bv;
+-        //设置图片资源:url或本地资源
+-        String[] images= new String[] {
+-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwNDYwODczOC8xODA=",
+-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwNTk4Njk5NC8xODA=",
+-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwMzM1NDYzMS8xODA=",
+-                "http://r.i.biquge5200.com/cover/aHR0cDovL3FpZGlhbi5xcGljLmNuL3FkYmltZy8zNDk1NzMvMTAwMzMwNzU2OC8xODA=",
+-               };
+ 
+-        //设置图片标题:自动对应
+-        String[] titles=new String[]{"圣墟","我是至尊","一念永恒","不朽凡人"};
+-
++    List<MyBookrack> datas;
++    MyBookrackAdapter adapter;
++    private Button btn_create, btn_add, btn_delete;
++    private EditText et_add, et_delete;
++    private GridView gv;
++    MyBookrack myBookrack;
+     @Nullable
+     @Override
+     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+-        View view=inflater.inflate(R.layout.book_lunbo,null);
+-        return  view;
++        View view = inflater.inflate(R.layout.book_rack, null);
++        return view;
+     }
+     @Override
+     public void onStart() {
+         super.onStart();
+-       // initBanner();
+-        bv=new BannerView(getLayoutInflater(),getView(),getContext(),titles,images);
+-        bv.initBanner();
+ 
++        initViewId();
++        datas = DataSupport.findAll(MyBookrack.class);
++        createOnclick();
++        addOnclick();
++        deleteOnclick();
++        bindAdapter();
+     }
+-}
++    private void bindAdapter() {
++        adapter = new MyBookrackAdapter(getContext(), datas);
++        gv.setAdapter(adapter);
++    }
+ 
++    private void deleteOnclick() {
++        btn_delete.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                DataSupport.deleteAll(MyBookrack.class);
++                datas.clear();
++                adapter.notifyDataSetChanged();
++            }
++        });
++    }
++
++
++    private void addOnclick() {
++        //获取图片的bitmap对象
++        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.xh);
++
++        final String s = ImageTools.convertIconToString(bitmap);
++        btn_add.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++
++                myBookrack = new MyBookrack();
++                myBookrack.setBookName("狗蛋");
++                myBookrack.setBookAuthor("qq");
++                myBookrack.setBookCover(s);
++                myBookrack.setBookHref("opp");
++                myBookrack.save();
++//               byte[] a=myBookrack.getBookCover().getBytes();
++                if (myBookrack.save()) {
++                    ToastUtil.getLongToastByString(getContext(), "加入书架数据库成功");
++                } else {
++                    ToastUtil.getLongToastByString(getContext(), "加入书架数据库失败");
++                }
++                datas.clear();
++                datas.addAll(DataSupport.findAll(MyBookrack.class));
++                String ss = datas.get(0).getBookCover();
++                byte[] c = ss.getBytes();
++                Log.e("TAG", c.length + "");
++                adapter.notifyDataSetChanged();
++
++            }
++        });
++    }
++
++    private void createOnclick() {
++
++    }
++    private void initViewId() {
++        btn_add = getView().findViewById(R.id.btn_add);
++        btn_delete = getView().findViewById(R.id.btn_delete);
++        btn_create = getView().findViewById(R.id.btn_create);
++        et_add = getView().findViewById(R.id.et_add);
++        et_delete = getView().findViewById(R.id.et_delete);
++        gv = getView().findViewById(R.id.gv);
++    }
++}
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/res/layout/activity_main.xml	(revision )
+@@ -12,6 +12,17 @@
+ 
+         android:background="@color/colorPrimary">
+ 
++        <ImageView
++            android:id="@+id/mulu"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++
++            android:layout_alignParentStart="true"
++            android:layout_alignTop="@+id/iv_search"
++            android:layout_marginStart="13dp"
++            android:background="@drawable/img_bg_selector"
++            android:clickable="true"
++            android:src="@mipmap/mulu" />
+         <LinearLayout
+ 
+             android:layout_width="180dp"
+@@ -74,6 +85,8 @@
+         android:id="@+id/id_viewpager"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
++        android:layout_alignParentStart="true"
++        android:layout_alignParentTop="true"
+         android:flipInterval="30"
+         android:persistentDrawingCache="animation" />
+ 
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- build.gradle	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ build.gradle	(revision )
+@@ -19,6 +19,7 @@
+     repositories {
+         google()
+         jcenter()
++        maven { url 'https://jitpack.io' }
+     }
+ }
+ 
+Index: app/src/main/res/drawable/btn_big_normal_selected.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/btn_big_normal_selected.xml	(revision )
++++ app/src/main/res/drawable/btn_big_normal_selected.xml	(revision )
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++
++</resources>
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/AndroidManifest.xml	(revision )
+@@ -25,6 +25,7 @@
+         <activity android:name=".activity.ReadPageActivity"/>
+         <activity android:name=".activity.BookTypeWitchSelectedActivity"/>
+         <activity android:name=".activity.SearchActivity"/>
++        <activity android:name=".activity.SearchLocalTxtActivity"/>
+     </application>
+ 
+ 
+Index: app/src/main/java/com/example/hcm/feihuread/activity/SearchLocalTxtActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/activity/SearchLocalTxtActivity.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/activity/SearchLocalTxtActivity.java	(revision )
+@@ -0,0 +1,269 @@
++package com.example.hcm.feihuread.activity;
++
++import android.app.Activity;
++import android.content.pm.PackageManager;
++import android.os.Bundle;
++import android.os.Environment;
++import android.os.Handler;
++import android.os.Message;
++import android.support.v4.app.ActivityCompat;
++import android.support.v7.widget.DividerItemDecoration;
++import android.support.v7.widget.LinearLayoutManager;
++import android.support.v7.widget.RecyclerView;
++import android.util.Log;
++import android.view.View;
++import android.widget.Button;
++import android.widget.Toast;
++
++import com.example.hcm.feihuread.R;
++import com.example.hcm.feihuread.adapter.MyLocalTxtAdapter;
++import com.example.hcm.feihuread.inter.MyItemClickListener;
++import com.example.hcm.feihuread.read.BookInfo;
++import com.hw.txtreaderlib.bean.TxtMsg;
++import com.hw.txtreaderlib.interfaces.ILoadListener;
++import com.hw.txtreaderlib.main.TxtReaderView;
++
++import java.io.BufferedReader;
++import java.io.File;
++import java.io.FileInputStream;
++import java.io.IOException;
++import java.io.InputStream;
++import java.io.InputStreamReader;
++import java.lang.ref.WeakReference;
++import java.util.ArrayList;
++import java.util.List;
++
++/**
++ * Created by hcm on 2018/4/18.
++ */
++
++public class SearchLocalTxtActivity extends Activity implements MyItemClickListener {
++    TxtReaderView tv;
++    private static final int REQUEST_EXTERNAL_STORAGE = 1;
++    private static String[] PERMISSIONS_STORAGE = {
++            "android.permission.READ_EXTERNAL_STORAGE",
++            "android.permission.WRITE_EXTERNAL_STORAGE"};
++
++    BookInfo bookInfo;
++    private Button bt_open;                //打开按钮
++    final MyHandeler myHandeler = new MyHandeler(SearchLocalTxtActivity.this);
++    final static List<BookInfo> datas = new ArrayList<>();
++
++    MyLocalTxtAdapter myAdapter;
++    private RecyclerView rv;
++
++    @Override
++    public void onItemClick(View view, int postion) {
++        Toast.makeText(this, "被点了", Toast.LENGTH_SHORT).show();
++//        String filePath=datas.get(postion).getBookName();
++        String filePath = "/storage/emulated/0/hcm/a.txt";
++
++        tv.loadTxtFile(filePath, new ILoadListener() {
++            @Override
++            public void onSuccess() {
++                tv.setTextSize(80);
++            }
++
++            @Override
++            public void onFail(TxtMsg txtMsg) {
++
++            }
++
++            @Override
++            public void onMessage(String s) {
++
++            }
++        });
++    }
++
++    private static class MyHandeler extends Handler {
++
++        WeakReference<SearchLocalTxtActivity> mainActivityWeakReference;
++
++        public MyHandeler(SearchLocalTxtActivity activity) {
++            mainActivityWeakReference = new WeakReference<SearchLocalTxtActivity>(activity);
++        }
++
++        @Override
++        public void handleMessage(Message msg) {
++            super.handleMessage(msg);
++            if (null != mainActivityWeakReference) {
++                final SearchLocalTxtActivity _actitity = mainActivityWeakReference.get();
++                switch (msg.what) {
++                    case 1:
++                        final String a = msg.getData().getString("name");
++                        final String b = msg.getData().getString("content");
++//                        bookInfo.setBookName(a);
++//                        datas.add(bookInfo);
++//                        _actitity.et_filename.setText(a);
++//                        _actitity.et_filecontent.setText(b);
++                        break;
++                }
++            }
++        }
++    }
++
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.search_local_txt_activity);
++        verifyStoragePermissions(this);
++        rv = findViewById(R.id.rv);
++        tv = findViewById(R.id.activity_hwtxtplay_readerView);
++        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
++        myAdapter = new MyLocalTxtAdapter(this, datas);
++        myAdapter.setOnItemClickListener(this);
++        rv.setAdapter(myAdapter);
++        rv.setLayoutManager(layoutManager);
++        rv.setHasFixedSize(true);
++        rv.addItemDecoration(new DividerItemDecoration(this, layoutManager.getOrientation()));
++//        et_filename = (EditText) findViewById(R.id.ET_FileName);
++//        et_filecontent = (EditText) findViewById(R.id.ET_FileContent);
++
++        bt_open = (Button) findViewById(R.id.But_Open);
++        bt_open.setOnClickListener(new View.OnClickListener() {//打开按钮监听
++            public void onClick(View arg0) {
++                //若输入的文件夹名为空
++
++
++                // 获得SD卡根目录路径 "/sdcard"
++                File sdDir = Environment.getExternalStorageDirectory();
++                // File sdDir = Environment.getDataDirectory().getParentFile();
++                final File path = new File(sdDir + File.separator);
++
++                new Thread(new Runnable() {
++                    @Override
++                    public void run() {
++
++                        // 判断SD卡是否存在，并且是否具有读写权限
++                        if (Environment.getExternalStorageState().
++                                equals(Environment.MEDIA_MOUNTED)) {
++                            final File[] files = path.listFiles();// 读取文件夹下文件
++                            Message msg = Message.obtain();
++                            Bundle bundle = new Bundle();
++                            String a = getFileName(files);
++                            bundle.putString("name", a);
++                            bundle.putString("content", getFileContent(files));
++                            msg.what = 1;
++                            msg.setData(bundle);
++
++//                                et_filename.setText("");
++//                                et_filecontent.setText("");
++//
++//                                et_filename.setText(getFileName(files));
++//                                et_filecontent.setText(getFileContent(files));
++                            runOnUiThread(new Runnable() {
++                                @Override
++                                public void run() {
++//                                        et_filename.setText(getFileName(files));
++//                                        et_filecontent.setText(getFileContent(files));
++                                }
++                            });
++                        }
++
++                    }
++                }).start();
++
++
++            }
++
++        });
++    }
++
++    public static void verifyStoragePermissions(Activity activity) {
++
++        try {
++            //检测是否有写的权限
++            int permission = ActivityCompat.checkSelfPermission(activity,
++                    "android.permission.WRITE_EXTERNAL_STORAGE");
++            if (permission != PackageManager.PERMISSION_GRANTED) {
++                // 没有写的权限，去申请写的权限，会弹出对话框
++                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
++            }
++        } catch (Exception e) {
++            e.printStackTrace();
++        }
++    }
++
++    //读取指定目录下的所有TXT文件的文件内容
++    protected String getFileContent(File[] files) {
++        String content = "";
++        if (files != null) {    // 先判断目录是否为空，否则会报空指针
++            for (File file : files) {
++                //检查此路径名的文件是否是一个目录(文件夹)
++                if (file.isDirectory()) {
++                    Log.i("zeng", "若是文件目录。继续读1" +
++                            file.getName().toString() + file.getPath().toString());
++                    getFileContent(file.listFiles());
++                    Log.i("zeng", "若是文件目录。继续读2" +
++                            file.getName().toString() + file.getPath().toString());
++                } else {
++                    if (file.getName().endsWith(".txt")) {//格式为txt文件
++                        try {
++                            InputStream instream = new FileInputStream(file);
++                            if (instream != null) {
++                                InputStreamReader inputreader =
++                                        new InputStreamReader(instream, "GBK");
++                                BufferedReader buffreader =
++                                        new BufferedReader(inputreader);
++                                String line = "";
++                                //分行读取
++                                while ((line = buffreader.readLine()) != null) {
++                                    content += line + "\n";
++                                }
++                                instream.close();
++                            }
++                        } catch (java.io.FileNotFoundException e) {
++                            Log.d("TestFile", "The File doesn't not exist.");
++                        } catch (IOException e) {
++                            Log.d("TestFile", e.getMessage());
++                        }
++
++                    }
++                }
++
++            }
++
++        }
++        return content;
++    }
++
++    //读取指定目录下的所有TXT文件的文件名
++    private String getFileName(File[] files) {
++        String str = "";
++        if (files != null) {    // 先判断目录是否为空，否则会报空指针
++            for (File file : files) {
++                if (file.isDirectory()) {//检查此路径名的文件是否是一个目录(文件夹)
++                    Log.i("zeng", "若是文件目录。继续读1"
++                            + file.getName().toString() + file.getPath().toString());
++                    getFileName(file.listFiles());
++                    Log.i("zeng", "若是文件目录。继续读2"
++                            + file.getName().toString() + file.getPath().toString());
++                } else {
++                    String fileName = file.getName();
++                    String filelj = file.getAbsolutePath();
++                    if (fileName.endsWith(".txt")) {
++                        String s = fileName.substring(0, fileName.lastIndexOf(".")).toString();
++                        Log.i("zeng", "文件名txt：：   " + s);
++                        str = fileName.substring(0, fileName.lastIndexOf(".")) + "\n" + "路径：" + filelj + "\n";
++                        bookInfo = new BookInfo();
++                        bookInfo.setBookName(str);
++                        datas.add(bookInfo);
++                        runOnUiThread(new Runnable() {
++                            @Override
++                            public void run() {
++                                myAdapter.notifyDataSetChanged();
++                            }
++                        });
++
++                    }
++
++                }
++
++            }
++
++        }
++        return str;
++    }
++
++
++}
+Index: app/src/main/java/com/example/hcm/feihuread/data/GetData.java
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/data/GetData.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/inter/GetData.java	(revision )
+@@ -1,4 +1,4 @@
+-package com.example.hcm.feihuread.data;
++package com.example.hcm.feihuread.inter;
+ 
+ public interface GetData
+ {
+Index: app/src/main/java/com/example/hcm/feihuread/db/MyPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/db/MyPage.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/db/MyPage.java	(revision )
+@@ -0,0 +1,83 @@
++package com.example.hcm.feihuread.db;
++
++import org.litepal.crud.DataSupport;
++
++/**
++ * Author: duanlei
++ * Date: 2015-12-10
++ */
++public class MyPage extends DataSupport {
++
++
++    private int id;
++    private int bookId;
++    private int chapter;
++    private int startPosition;
++    private int pageSize;
++
++    private String FileName;
++
++    public MyPage() {
++
++    }
++
++    public int getId() {
++        return id;
++    }
++
++    public void setId(int id) {
++        this.id = id;
++    }
++
++    public int getBookId() {
++        return bookId;
++    }
++
++    public void setBookId(int bookId) {
++        this.bookId = bookId;
++    }
++
++    public int getChapter() {
++        return chapter;
++    }
++
++    public void setChapter(int chapter) {
++        this.chapter = chapter;
++    }
++
++    public int getStartPosition() {
++        return startPosition;
++    }
++
++    public void setStartPosition(int startPosition) {
++        this.startPosition = startPosition;
++    }
++
++    public int getPageSize() {
++        return pageSize;
++    }
++
++    public void setPageSize(int pageSize) {
++        this.pageSize = pageSize;
++    }
++
++    public String getFileName() {
++        return FileName;
++    }
++
++    public void setFileName(String fileName) {
++        FileName = fileName;
++    }
++
++    @Override
++    public String toString() {
++        return "MyPage{" +
++                "id=" + id +
++                ", bookId=" + bookId +
++                ", chapter=" + chapter +
++                ", startPosition=" + startPosition +
++                ", pageSize=" + pageSize +
++                ", FileName='" + FileName + '\'' +
++                '}';
++    }
++}
+Index: app/src/main/java/com/example/hcm/feihuread/read/MyPage.java
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/read/MyPage.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/read/MyPage.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
+@@ -1,83 +0,0 @@
+-package com.example.hcm.feihuread.read;
+-
+-import org.litepal.crud.DataSupport;
+-
+-/**
+- * Author: duanlei
+- * Date: 2015-12-10
+- */
+-public class MyPage extends DataSupport {
+-
+-
+-    private int id;
+-    private int bookId;
+-    private int chapter;
+-    private int startPosition;
+-    private int pageSize;
+-
+-    private String FileName;
+-
+-    public MyPage() {
+-
+-    }
+-
+-    public int getId() {
+-        return id;
+-    }
+-
+-    public void setId(int id) {
+-        this.id = id;
+-    }
+-
+-    public int getBookId() {
+-        return bookId;
+-    }
+-
+-    public void setBookId(int bookId) {
+-        this.bookId = bookId;
+-    }
+-
+-    public int getChapter() {
+-        return chapter;
+-    }
+-
+-    public void setChapter(int chapter) {
+-        this.chapter = chapter;
+-    }
+-
+-    public int getStartPosition() {
+-        return startPosition;
+-    }
+-
+-    public void setStartPosition(int startPosition) {
+-        this.startPosition = startPosition;
+-    }
+-
+-    public int getPageSize() {
+-        return pageSize;
+-    }
+-
+-    public void setPageSize(int pageSize) {
+-        this.pageSize = pageSize;
+-    }
+-
+-    public String getFileName() {
+-        return FileName;
+-    }
+-
+-    public void setFileName(String fileName) {
+-        FileName = fileName;
+-    }
+-
+-    @Override
+-    public String toString() {
+-        return "MyPage{" +
+-                "id=" + id +
+-                ", bookId=" + bookId +
+-                ", chapter=" + chapter +
+-                ", startPosition=" + startPosition +
+-                ", pageSize=" + pageSize +
+-                ", FileName='" + FileName + '\'' +
+-                '}';
+-    }
+-}
+Index: app/src/main/res/layout/rv_locallist_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/rv_locallist_item.xml	(revision )
++++ app/src/main/res/layout/rv_locallist_item.xml	(revision )
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.constraint.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
++    android:layout_height="match_parent">
++<TextView
++    android:id="@+id/tv_book_name"
++    android:layout_width="wrap_content"
++    android:layout_height="wrap_content" />
++
++
++</android.support.constraint.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/hcm/feihuread/utils/ImageTools.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/utils/ImageTools.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/utils/ImageTools.java	(revision )
+@@ -0,0 +1,356 @@
++package com.example.hcm.feihuread.utils;
++
++/**
++ * Created by hcm on 2018/4/19.
++ */
++
++
++import android.graphics.Bitmap;
++import android.graphics.BitmapFactory;
++import android.graphics.Canvas;
++import android.graphics.ColorMatrix;
++import android.graphics.ColorMatrixColorFilter;
++import android.graphics.Paint;
++import android.graphics.PorterDuff;
++import android.graphics.PorterDuffXfermode;
++import android.graphics.Rect;
++import android.graphics.RectF;
++import android.graphics.drawable.BitmapDrawable;
++import android.graphics.drawable.Drawable;
++import android.util.Base64;
++
++import java.io.ByteArrayOutputStream;
++import java.io.File;
++import java.io.FileNotFoundException;
++import java.io.FileOutputStream;
++import java.io.IOException;
++
++/**
++ * 处理图片的工具类.
++ */
++public class ImageTools {
++    /**
++     * 图片去色,返回灰度图片
++     *
++     * @param
++     * @return 去色后的图片
++     */
++    public static Bitmap toGrayscale(Bitmap bmpOriginal) {
++        int width, height;
++        // 获取宽高
++        height = bmpOriginal.getHeight();
++        width = bmpOriginal.getWidth();
++        // 按照一定画质新建bitmap
++        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height,
++                Bitmap.Config.RGB_565);
++        // 建画布
++        Canvas c = new Canvas(bmpGrayscale);
++        // 建画笔
++        Paint paint = new Paint();
++        // 颜色矩阵
++        ColorMatrix cm = new ColorMatrix();
++        // 设置灰阶
++        cm.setSaturation(0);
++        // 颜色矩阵颜色过滤对象,传入设置的颜色矩阵
++        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
++        // 设置画笔的颜色过滤,传入颜色矩阵颜色过滤对象
++        paint.setColorFilter(f);
++        // 在画布用画笔画传入的图片
++        c.drawBitmap(bmpOriginal, 0, 0, paint);
++        return bmpGrayscale;
++    }
++    /**
++     * 去色同时加圆角
++     *
++     * @param bmpOriginal 原图
++     * @param pixels 圆角弧度
++     * @return 修改后的图片
++     */
++    public static Bitmap toGrayscale(Bitmap bmpOriginal, int pixels) {
++        return toRoundCorner(toGrayscale(bmpOriginal), pixels);
++    }
++    /**
++     * 把图片变成圆角
++     * @param bitmap 需要修改的图片
++     * @param pixels 圆角的弧度
++     * @return 圆角图片
++     */
++    public static Bitmap toRoundCorner(Bitmap bitmap, int pixels) {
++        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
++                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
++        Canvas canvas = new Canvas(output);
++        final int color = 0xff424242;
++        final Paint paint = new Paint();
++        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
++        final RectF rectF = new RectF(rect);
++
++        final float roundPx = pixels;// 圆角的弧度
++
++        paint.setAntiAlias(true);
++        canvas.drawARGB(0, 0, 0, 0);
++        paint.setColor(color);
++        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
++        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
++        canvas.drawBitmap(bitmap, rect, rect, paint);
++        return output;
++    }
++    /** */
++    /**
++     * 使圆角功能支持BitampDrawable
++     *
++     * @param bitmapDrawable
++     * @param pixels
++     * @return
++     */
++    public static BitmapDrawable toRoundCorner(BitmapDrawable bitmapDrawable,
++                                               int pixels) {
++        Bitmap bitmap = bitmapDrawable.getBitmap();
++        bitmapDrawable = new BitmapDrawable(toRoundCorner(bitmap, pixels));
++        return bitmapDrawable;
++    }
++    /**
++     * 读取路径中的图片，然后将其转化为缩放后的bitmap
++     * @param path
++     */
++    public static Bitmap saveBefore(String path) {
++        BitmapFactory.Options options = new BitmapFactory.Options();
++        options.inJustDecodeBounds = true;
++        // 获取这个图片的宽和高
++        Bitmap bitmap = BitmapFactory.decodeFile(path, options); // 此时返回bm为空
++        options.inJustDecodeBounds = false;
++        // 计算缩放比
++        int be = (int) (options.outHeight / (float) 200);
++        if (be <= 0) {
++            be = 1;
++        }
++        options.inSampleSize = 2; // 图片长宽各缩小二分之一
++        // 重新读入图片，注意这次要把options.inJustDecodeBounds 设为 false哦
++        bitmap = BitmapFactory.decodeFile(path, options);
++        int w = bitmap.getWidth();
++        int h = bitmap.getHeight();
++        System.out.println(w + "    " + h);
++        // savePNG_After(bitmap,path);
++        saveJPGE_After(bitmap, path);
++        return bitmap;
++    }
++    /**
++     * 保存图片为PNG
++     *
++     * @param bitmap bitmap对象
++     * @param name  path
++     */
++    public static void savePNG_After(Bitmap bitmap, String name) {
++        File file = new File(name);
++        try {
++            FileOutputStream out = new FileOutputStream(file);
++            if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
++                out.flush();
++                out.close();
++            }
++        } catch (FileNotFoundException e) {
++            e.printStackTrace();
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++    /**
++     * 保存图片为JPEG
++     *
++     * @param bitmap
++     * @param path
++     */
++    public static void saveJPGE_After(Bitmap bitmap, String path) {
++        File file = new File(path);
++        try {
++            FileOutputStream out = new FileOutputStream(file);
++            if (bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)) {
++                out.flush();
++                out.close();
++            }
++        } catch (FileNotFoundException e) {
++            e.printStackTrace();
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++    /**
++     * 水印
++     *
++     *
++     * @return bitmap 处理后的图片
++     */
++    public static Bitmap createBitmapForWatermark(Bitmap src, Bitmap watermark) {
++        if (src == null) {
++            return null;
++        }
++        //位图的宽高
++        int w = src.getWidth();
++        int h = src.getHeight();
++        //水印的宽高
++        int ww = watermark.getWidth();
++        int wh = watermark.getHeight();
++        // 创建一个新的和SRC长度宽度一样的位图
++        Bitmap newb = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
++        Canvas cv = new Canvas(newb);
++        // 在 0，0坐标开始画入src
++        cv.drawBitmap(src, 0, 0, null);
++        // 在src的右下角画入水印（距离底部和右边距离为5）
++        cv.drawBitmap(watermark, w - ww + 5, h - wh + 5, null);
++        // 保存
++        cv.save(Canvas.ALL_SAVE_FLAG);
++        // 存储
++        cv.restore();
++        return newb;
++    }
++    /**
++     * 将Bitmap转换成指定大小
++     *
++     * @param bitmap
++     * @param width
++     * @param height
++     * @return
++     */
++    public static Bitmap createBitmapBySize(Bitmap bitmap, int width, int height) {
++        return Bitmap.createScaledBitmap(bitmap, width, height, true);
++    }
++
++    /**
++     * Drawable 转 Bitmap
++     *
++     * @param drawable
++     * @return
++     */
++    public static Bitmap drawableToBitmapByBD(Drawable drawable) {
++        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
++        return bitmapDrawable.getBitmap();
++    }
++    /**
++     * Bitmap 转 Drawable
++     *
++     * @param bitmap
++     * @return
++     */
++    public static Drawable bitmapToDrawableByBD(Bitmap bitmap) {
++        Drawable drawable = new BitmapDrawable(bitmap);
++        return drawable;
++    }
++
++    /**
++     * byte[] 转 bitmap
++     *
++     * @param b
++     * @return
++     */
++    public static Bitmap bytesToBimap(byte[] b) {
++        if (b.length != 0) {
++            return BitmapFactory.decodeByteArray(b, 0, b.length);
++        } else {
++            return null;
++        }
++    }
++    /**
++     * bitmap 转 byte[]
++     *
++     * @param bm
++     * @return
++     */
++    public static byte[] bitmapToBytes(Bitmap bm) {
++        ByteArrayOutputStream baos = new ByteArrayOutputStream();
++        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
++        return baos.toByteArray();
++    }
++
++    /**
++     * 图片转成string
++     *
++     * @param bitmap
++     * @return
++     */
++    public static String convertIconToString(Bitmap bitmap)
++    {
++        ByteArrayOutputStream baos = new ByteArrayOutputStream();// outputstream
++        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
++        byte[] appicon = baos.toByteArray();// 转为byte数组
++        return Base64.encodeToString(appicon, Base64.DEFAULT);
++    }
++    /**
++     * string转成bitmap
++     *
++     * @param st
++     */
++    public static Bitmap convertStringToIcon(String st)
++    {
++        // OutputStream out;
++        Bitmap bitmap = null;
++        try
++        {
++            // out = new FileOutputStream("/sdcard/aa.jpg");
++            byte[] bitmapArray;
++            bitmapArray = Base64.decode(st, Base64.DEFAULT);
++            bitmap =
++                    BitmapFactory.decodeByteArray(bitmapArray, 0,
++                            bitmapArray.length);
++            // bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
++            return bitmap;
++        }
++        catch (Exception e)
++        {
++            return null;
++        }
++    }
++
++    /**
++     * Check the SD card 检测是否有SD卡
++     *
++     * @return
++     */
++    public static boolean checkSDCardAvailable() {
++        return android.os.Environment.getExternalStorageState().equals(
++                android.os.Environment.MEDIA_MOUNTED);
++    }
++    /**
++     * Save image to the SD card 保存图片到sd卡
++     *
++     * @param photoBitmap 位图
++     * @param photoName  图片名
++     * @param path 存放路径
++     *
++     */
++    public static void savePhotoToSDCard(Bitmap photoBitmap, String path,
++                                         String photoName) {
++        // 判断是否存在sd卡
++        if (checkSDCardAvailable()) {
++            File dir = new File(path);
++            // 如果dir 文件不存在,新建
++            if (!dir.exists()) {
++                dir.mkdirs();
++            }
++            // 建图片文件路径,在文件路径下
++            File photoFile = new File(path, photoName + ".png");
++            // 新建文件输出流定为空
++            FileOutputStream fileOutputStream = null;
++            try {
++                fileOutputStream = new FileOutputStream(photoFile);
++                if (photoBitmap != null) {
++                    if (photoBitmap.compress(Bitmap.CompressFormat.PNG, 100,
++                            fileOutputStream)) {
++                        fileOutputStream.flush(); // 这里才是输出数据
++                        fileOutputStream.close();
++                    }
++                }
++            } catch (FileNotFoundException e) {
++                photoFile.delete();
++                e.printStackTrace();
++            } catch (IOException e) {
++                photoFile.delete();
++                e.printStackTrace();
++            } finally {
++                try {
++                    fileOutputStream.close();
++                } catch (IOException e) {
++                    e.printStackTrace();
++                }
++            }
++        }
++    }
++}
+\ No newline at end of file
+Index: app/src/main/res/layout/book_rack_list_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/book_rack_list_item.xml	(revision )
++++ app/src/main/res/layout/book_rack_list_item.xml	(revision )
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:orientation="vertical"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="@drawable/gv_item_selector"
++    android:gravity="center"
++    android:clickable="true"
++    android:padding="4dp"
++    >
++    <ImageView
++        android:id="@+id/item_img"
++        android:layout_width="64dp"
++        android:layout_height="64dp"
++        android:src="@mipmap/ic_launcher"
++
++        />
++    <TextView
++        android:id="@+id/item_text"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:paddingLeft="15dp"
++        android:singleLine="true"
++        android:text="dadasdasdad"
++
++        />
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/hcm/feihuread/adapter/MyLocalTxtAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/adapter/MyLocalTxtAdapter.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/adapter/MyLocalTxtAdapter.java	(revision )
+@@ -0,0 +1,81 @@
++package com.example.hcm.feihuread.adapter;
++
++import android.content.Context;
++import android.support.v7.widget.RecyclerView;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.TextView;
++
++import com.example.hcm.feihuread.R;
++import com.example.hcm.feihuread.inter.MyItemClickListener;
++
++import com.example.hcm.feihuread.read.*;
++
++import java.util.List;
++
++/**
++ * Created by hcm on 2018/4/13.
++ */
++
++public class MyLocalTxtAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
++    Context mContext;
++    private List<BookInfo> datas;
++    private MyItemClickListener myItemClickListener;
++
++    public MyLocalTxtAdapter(Context mContext, List<BookInfo> datas) {
++        this.mContext = mContext;
++        this.datas = datas;
++    }
++
++    @Override
++    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
++        View view = null;
++        RecyclerView.ViewHolder viewHolder = null;
++        view = LayoutInflater.from(mContext).inflate(R.layout.rv_locallist_item, null);
++        viewHolder = new MyHolder(view);
++        return viewHolder;
++    }
++
++    @Override
++    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
++
++        MyHolder myHolder= (MyHolder) holder;
++        myHolder.bookName.setText((CharSequence) datas.get(position).getBookName());
++    }
++
++    @Override
++    public int getItemCount() {
++        return datas.size();
++    }
++    public void setOnItemClickListener(MyItemClickListener listener){
++        myItemClickListener=listener;
++    }
++    class MyHolder extends RecyclerView.ViewHolder {
++
++
++
++
++        public MyItemClickListener getMyItemClickListener() {
++            return myItemClickListener;
++        }
++
++        TextView bookName;
++
++        public MyHolder(View itemView) {
++            super(itemView);
++            bookName = itemView.findViewById(R.id.tv_book_name);
++            itemView.setOnClickListener(new View.OnClickListener() {
++                @Override
++                public void onClick(View view) {
++                    if(myItemClickListener!=null)
++                    {
++                        myItemClickListener.onItemClick(view,getPosition());
++                    }
++                }
++            });
++        }
++
++    }
++
++}
+Index: app/src/main/java/com/example/hcm/feihuread/data/SearchDataFunction.java
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/data/SearchDataFunction.java	(revision 79588a39ab7430d7ae0628f07697a4876f393083)
++++ app/src/main/java/com/example/hcm/feihuread/inter/SearchDataFunction.java	(revision )
+@@ -1,4 +1,4 @@
+-package com.example.hcm.feihuread.data;
++package com.example.hcm.feihuread.inter;
+ 
+ /**
+  * Created by hcm on 2018/4/16.
+Index: app/src/main/java/com/example/hcm/feihuread/db/BookInfo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/hcm/feihuread/db/BookInfo.java	(revision )
++++ app/src/main/java/com/example/hcm/feihuread/db/BookInfo.java	(revision )
+@@ -0,0 +1,25 @@
++package com.example.hcm.feihuread.db;
++
++/**
++ * Created by hcm on 2018/4/13.
++ */
++
++class BookInfo {
++    private String bookName;
++
++    public BookInfo() {
++
++    }
++
++    public String getBookName() {
++        return bookName;
++    }
++
++    public void setBookName(String bookName) {
++        this.bookName = bookName;
++    }
++
++    public BookInfo(String bookName) {
++        this.bookName = bookName;
++    }
++}
+Index: app/src/main/res/layout/search_local_txt_activity.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/search_local_txt_activity.xml	(revision )
++++ app/src/main/res/layout/search_local_txt_activity.xml	(revision )
+@@ -0,0 +1,54 @@
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:android1="http://schemas.android.com/apk/res/android"
++    android:layout_width="fill_parent"
++    android:layout_height="fill_parent"
++    android:orientation="vertical" >
++
++    <LinearLayout
++        android:orientation="horizontal"
++        android:layout_width="fill_parent"
++        android:layout_height="wrap_content" >
++        <TextView
++            android:textSize="18dip"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:text="文件名" />
++
++        <Button
++            android:text="开始扫描"
++            android:id="@+id/But_Open"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content" />
++
++    </LinearLayout>
++<android.support.v7.widget.RecyclerView
++    android:id="@+id/rv"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content">
++
++</android.support.v7.widget.RecyclerView>
++    <com.hw.txtreaderlib.main.TxtReaderView
++        android:id="@+id/activity_hwtxtplay_readerView"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++
++        />
++    <!--<EditText
++        android1:id="@+id/ET_FileName"
++        android:layout_width="match_parent"
++       android:layout_height="wrap_content"
++        android1:ems="10" >
++    </EditText>
++
++    <ScrollView
++        android:id="@+id/ScrollView01"
++        android:layout_width="fill_parent"
++        android:layout_height="wrap_content">
++        <EditText
++            android:editable="false"
++            android:id="@+id/ET_FileContent"
++            android:layout_width="fill_parent"
++            android:layout_height="wrap_content" />
++    </ScrollView>-->
++
++</LinearLayout>
+\ No newline at end of file
+diff --git app/src/main/res/mipmap-hdpi/mulu.png app/src/main/res/mipmap-hdpi/mulu.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..61f7d6fa561404ce356d8fcf37fa4dbf1459234c
+GIT binary patch
+literal 1104
+zc$@)H1h4yvP)<h;3K|Lk000e1NJLTq001xm001xu1^@s6R|5Hm000CRNkl<ZXhZFq
+zZ%h+s9LImp?b@<}qjbzgO_W7I9UCoK{4*sH&ALf4l`w&Jjz57+GBy+4_F{`JG5(2(
+zQP4N;jSJcrtI#Fhc)2(D!YO(f4x|IO7i+Qv0%CiWUhmqw-m{zz(xz9InjCFO?`8A!
+zp5OQReZRl^<XQw-exWR{A94cH-N9T3GO`18o9!h)%B=uk1q@yUz})im-$-|{YWpWx
+zsIB^N7tcp~HkKCX-+reMW@o}c56wk&dg9Tusn8zEOR=#xdLcG?5CEB$MIgq%QXV(6
+zuveUbx{3xXLTKcRqh+vr@9M>Rynl1><CVX_?+^FhxchT^Y@uz{pA8_uwj#4$&{_Z=
+zijpiV3a(+-8>#|Y-**g_Zz-(#_WLafwJ0LK`<ekP5pPkGH@yoBT6Q{^4{O(28tm(}
+zt{?sw55Vak#^Kg@|Kh>Nb>NVtDR|;kMZRJkwX4-}R}whfKuz>hnJJ*MF?i(5viw;4
+z#0u$brv-K{;>cJ5OIe5uO3=}KKeH{AEW}C|E}ox&KPR85h8Pgo%x2v(gjgb3zZ7;2
+zyNXpqtbC}9(GVwfzh=_wwrw{P94Emj6A%c%4}Je|AFGbhSEM>Xg!W?;%Pd4mDt3sd
+zqQrj>vNnXV6=U!MMz>>qulcx1VS^kCrEpl9EM1u$$ZD8#RDa$j@_f(Qt(AIHSqX5{
+zPhgrJjQ~OqLf)DE84q(hqk-P<>?RA=Eb`KG@BV)FDohQH^t$d`i-S4G?#=;(W!tO8
+zMVdbcL{1=iA1k<Nr#j5pcXbSw*s5!`9cxPnTx6buzS{PLC$W83J5yf2&tmOp&?Ka>
+zH=P;rz;8!SCx^Lut0QRZIg$TnRfTFXzZ^Isgq{TASSX_ed}6T&Ke&7{sQ~xEPJy3g
+zGgp9Oq4N5VYSiqI6&6xpjx^@c2b`A@LwxQkOx;rtF#xt1mnFnJ$v<VoZrYg~=AMty
+z5ZAqCdzIn!@)DSznuX~HV-bXa=DaiMg*hde5^+6sm_xu&9`|+4$IMG?urg8NB@QBO
+zUs;(Q$ZD8tu{L$_GVb2EiZpC8>0yqKf`=6a1TgIP37HRbc_gCGyk{nh^N2WKUz?nV
+zN4`j}lj)0pGgs9#00`MkI;1(w2~i+fQ5J5F_Nl{Mv$bh($7(~(r=<l6p$v&Ke09&4
+z0CUaOMrQ9iqor<xQS%^A21K|p8d&1Z+`EmzZz>D(Hy7$ui#a~z6Ifo3W1*aY6#DkR
+z9mskMDKKXs5q(xA#6LZrhq0$igxEl6A7W7^0}(mw8tYFEbIKSE%ebeaNUvXCK*F35
+zg>k<aAuy(W{&4zX4r40m4;%}2On5VwgSixvn&Q%x$wDa}LRy#SI*``m2gv?Ed;AL%
+W-+oVNh=4u-0000<MNUMnLSTa8?Egpr
+
