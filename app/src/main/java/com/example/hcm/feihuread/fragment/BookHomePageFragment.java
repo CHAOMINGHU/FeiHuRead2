@@ -46,6 +46,7 @@ import java.util.Map;
  * Created by hcm on 2018/3/22.
  */
 public class BookHomePageFragment extends Fragment {
+    private GetChapterFunction getChapterFunction;
     private TextView txtTitle, txtAuthor, txtIntro;
     private TextView wuxia;
     private RecyclerView lv;
@@ -127,15 +128,9 @@ public class BookHomePageFragment extends Fragment {
                     href1=msg.getData().getString("href1");
                     //href=msg.getData().getString("href");
                     initNetData1();
-
-
-
                     adapter.notifyDataSetChanged();
-
                     break;
-
                 default:
-
                     break;
             }
             return false;
@@ -147,6 +142,7 @@ public class BookHomePageFragment extends Fragment {
      */
 
     public void getData(final String url, final int position) {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -158,7 +154,7 @@ public class BookHomePageFragment extends Fragment {
                         document = Jsoup
                                 .connect(url)
                                 .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31")
-                                .timeout(5000).get();
+                                .timeout(2000).get();
                         //flag = false;
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -168,33 +164,33 @@ public class BookHomePageFragment extends Fragment {
 
                 // 拿到所有章节  Elements eid = document.select("#list dl dt:nth-of-type(2)~dd");
                 //拿到第一个章节
-                Elements eids = document.select("#list dl dt:nth-of-type(2)~dd");
-                for( Element element:eids)
-                {
-                    Node n= element.child(0).childNode(0);
-                    allHref=eids.select("a").attr("href");
-                    bcdetail=new BookChapterDetail();
-                    bcdetail.setCurrentChapterHref(allHref);
-                    bcdetail.setCurrentChapterTitle(n.toString());
-                    datas.add(bcdetail);
-                   // Log.e("章节列表： "+n.toString(),allHref);
-                }
+
 
 
                 Elements eid = document.select("#list dl dt:nth-of-type(2)+dd");
                 nextHref = eid.select("a").attr("href");
-                if (nextHref != null) {
-                    Intent intent = new Intent(mContext, ReadPageActivity.class);
+                Elements eids = document.select("#list dd");
+                for( Element element:eids)
+                {
 
-                    intent.putExtra("datas", (Serializable) datas);
+                    Node n= element.child(0).childNode(0);
+                    allHref=element.select("a").attr("href");
+                    bcdetail=new BookChapterDetail();
+                    bcdetail.setCurrentChapterHref(allHref);
+                    bcdetail.setCurrentChapterTitle(n.toString());
+                    datas.add(bcdetail);
+
+                }
+                if (nextHref != null&&datas!=null) {
+                    Intent intent = new Intent(mContext, ReadPageActivity.class);
                     intent.putExtra("a", nextHref);
                     // intent.putExtra("a","http://www.biquge5200.com/75_75597/146416975.html");
-
                     startActivity(intent);
                     getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     nextHref = null;
-                }
+                    datas.clear();
 
+                }
             }
 
         }).start();

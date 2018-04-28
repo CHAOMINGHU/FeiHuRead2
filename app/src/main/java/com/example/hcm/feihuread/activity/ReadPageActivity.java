@@ -2,12 +2,15 @@ package com.example.hcm.feihuread.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +29,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.hcm.feihuread.R;
@@ -33,10 +37,13 @@ import com.example.hcm.feihuread.adapter.BookChapterAdapter;
 import com.example.hcm.feihuread.adapter.MyLocalTxtAdapter;
 import com.example.hcm.feihuread.data.GetChapterData;
 import com.example.hcm.feihuread.db.MyPage;
+import com.example.hcm.feihuread.fragment.BookHomePageFragment;
+import com.example.hcm.feihuread.fragment.GetChapterFunction;
 import com.example.hcm.feihuread.model.BookChapterDetail;
 import com.example.hcm.feihuread.popuwindow.CustomPopWindow;
 
 import com.example.hcm.feihuread.utils.CharsetDetector;
+import com.example.hcm.feihuread.utils.LightContrl;
 import com.example.hcm.feihuread.utils.ToastUtil;
 import com.example.hcm.feihuread.view.FlipperLayout;
 import com.example.hcm.feihuread.view.ReadView;
@@ -60,36 +67,42 @@ import java.util.List;
  * Created by Administrator on 2018/4/2 0002.
  */
 
-public class ReadPageActivity extends Activity implements View.OnClickListener, FlipperLayout.TouchListener, View.OnTouchListener ,BookChapterAdapter.OnRecyclerViewItemClickListener  {
+public class ReadPageActivity extends Activity implements View.OnClickListener, FlipperLayout.TouchListener, View.OnTouchListener, BookChapterAdapter.OnRecyclerViewItemClickListener,GetChapterFunction {
     FlipperLayout rootLayout;
     private static ReadView readView1;
     private static ReadView readView2;
+    ReadView readView;
     private DrawerLayout dl_layout;
     private TextView btn_next;
     private ImageView catalogue;
     private View recoverView;
     private View view1, v1;
     private View view2, v2;
+    private SeekBar seekBar;
     private static String textData = "";
     private static String txtUrl = "";
     private String url;
     private String nextUrl;
-    private static int index;
     private String txt = "123";
+    private static int index;
+    private int num = 0;
     private static final int MSG_DRAW_TEXT = 1;
-    static CharBuffer buffer;
+    private static StringBuffer sb;
+    private static CharBuffer buffer;
+    private static InputStream in;
     private static boolean oneIsLayout;
     private static MyHandler mHandler;
-    private static StringBuffer sb;
-    private static InputStream in;
     private float downX;
     private float downY;
     private boolean flag = false;
     private RecyclerView rv;
-    private List<BookChapterDetail> allChapterList=new ArrayList<>();
+    private List<BookChapterDetail> allChapterList = new ArrayList<>();
     private BookChapterAdapter bcAdapter;
+    private SharedPreferences shared = null;
+
     //布局管理器
     LinearLayoutManager layoutManager;
+
 
     @Override
     public void onItemClick(View view) {
@@ -99,6 +112,17 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     @Override
     public void onItemLongClick(View view) {
 
+    }
+
+    /**
+     * 章节链接的回调列表
+     * @param datas
+     */
+    @Override
+    public void getChapterDetail(List<BookChapterDetail> datas) {
+
+
+        this.allChapterList=datas;
     }
 
     private static class MyHandler extends Handler {
@@ -116,51 +140,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
             if (activity != null) {
                 switch (msg.what) {
                     case MSG_DRAW_TEXT:
-                        buffer.position(0);
-                        readView1.setText(buffer.toString());
-                        Log.e("FUCK THE NEXTURL1", readView1.getText().toString());
-                        ViewTreeObserver vto1 = readView1.getViewTreeObserver();
-                        vto1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                if (oneIsLayout)
-                                    return;
-                                int charNum = readView1.getCharNum();
-                                MyPage page = new MyPage();
-                                page.setPageSize(charNum);
-                                page.setStartPosition(charNum);
-                                page.setId(1);
-                                if (isSavePage(1)) {
-                                    page.update(1);
-                                } else {
-                                    page.save();
-                                }
-
-                                buffer.position(charNum);
-                                readView2.setText(buffer.toString());
-                                Log.e("FUCK THE NEXTURL2", readView2.getText().toString());
-                                oneIsLayout = true;
-                            }
-                        });
-                        ViewTreeObserver vto2 = readView2.getViewTreeObserver();
-                        vto2.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                int charNum = readView2.getCharNum();
-                                if (charNum == 0)
-                                    return;
-                                MyPage page = new MyPage();
-                                page.setPageSize(charNum);
-                                page.setStartPosition(charNum + getStartPosition(1));
-                                page.setId(2);
-
-                                if (isSavePage(2)) {
-                                    page.update(2);
-                                } else {
-                                    page.save();
-                                }
-                            }
-                        });
+                        observeView();
                         break;
                     case 2:
                         textData = msg.getData().getString("tc");
@@ -170,6 +150,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                         if (textData != null)
                             in = getStringStream(textData.trim());
                         new ReadingThread().start();
+
                         // textContent.setText(textData);
 
                         break;
@@ -178,6 +159,134 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         }
     }
 
+    @SuppressLint({"InflateParams", "WrongViewCast"})
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initByTitleBar();
+        setContentView(R.layout.f_main);
+
+        mHandler = new MyHandler(this);
+        mHandler.postDelayed(ReadingThread.currentThread(), 1000 * 60 * 5);
+        Intent intent = getIntent();
+        nextUrl = intent.getStringExtra("a");
+       // allChapterList = (List<BookChapterDetail>) intent.getSerializableExtra("datas");
+        initIdVeiw();
+        getReadContent();
+        rootLayout.setOnTouchListener((View.OnTouchListener) this);
+        shared = getSharedPreferences("base64", MODE_PRIVATE);
+        num = shared.getInt("seekBarNum", 0);
+        changeAppBrightness(num);
+        seekBar.setProgress(num);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                /* 结束 */
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                /* 开始 */
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // TODO Auto-generated method stub
+                changeAppBrightness(seekBar.getProgress());
+            }
+        });
+
+
+    }
+
+    //视图观察者对象
+    private static void observeView() {
+        buffer.position(1);
+        readView1.setText(buffer.toString());
+
+        Log.e("FUCK THE NEXTURL1", "我执行了view1");
+        ViewTreeObserver vto1 = readView1.getViewTreeObserver();
+        vto1.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                //如果还是这个布局就返回
+                if (oneIsLayout)
+                    return;
+                //否则把当前章字数存数据库
+                int charNum = readView1.getCharNum();
+                MyPage page = new MyPage();
+                page.setPageSize(charNum);
+                page.setStartPosition(charNum);
+                page.setId(1);
+                //保存成功更新
+                if (isSavePage(1)) {
+                    page.update(1);
+                } else {
+                    page.save();
+                }
+                //当字数到到达一页
+                buffer.position(charNum);
+                //给第二页赋值
+                readView2.setText(buffer.toString());
+                Log.e("FUCK THE NEXTURL1", "我执行了view2");
+                oneIsLayout = true;
+            }
+        });
+        ViewTreeObserver vto2 = readView2.getViewTreeObserver();
+        vto2.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int charNum = readView2.getCharNum();
+                if (charNum == 0)
+                    return;
+                MyPage page = new MyPage();
+                page.setPageSize(charNum);
+                page.setStartPosition(charNum + getStartPosition(1));
+                page.setId(2);
+
+                if (isSavePage(2)) {
+                    page.update(2);
+                } else {
+                    page.save();
+                }
+            }
+        });
+    }
+
+    // 获取系统屏幕亮度
+    public int getScreenBrightness() {
+        int value = 0;
+        ContentResolver cr = getContentResolver();
+        try {
+            value = Settings.System.getInt(cr, Settings.System.SCREEN_BRIGHTNESS);
+        } catch (Settings.SettingNotFoundException e) {
+
+        }
+        return value;
+    }
+
+    // 获取app亮度
+    public void changeAppBrightness(int brightness) {
+        Window window = getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.screenBrightness = (brightness <= 0 ? 1 : brightness) / 255f;
+        window.setAttributes(lp);
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+        SharedPreferences.Editor editor = shared.edit();
+        editor.clear();
+        editor.putInt("seekBarNum", seekBar.getProgress());
+        editor.commit();
+    }
+
+    //字符串转换输入流
     public static InputStream getStringStream(String sInputString) {
         if (sInputString != null && !sInputString.trim().equals("")) {
             try {
@@ -190,40 +299,36 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         return null;
     }
 
+    //判断该页有没有保存
     private static boolean isSavePage(int pageNo) {
         return DataSupport.find(MyPage.class, pageNo) != null;
     }
 
+    //获得起始页
     private static int getStartPosition(int pageNo) {
         if (pageNo < 1) {
 
             return 0;
         }
-
+        //若是该章节有存库，就去查
         if (isSavePage(pageNo)) {
             return DataSupport.find(MyPage.class, pageNo).getStartPosition();
         }
         return 0;
     }
 
-
-    @SuppressLint({"InflateParams", "WrongViewCast"})
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initByTitleBar();
-        setContentView(R.layout.f_main);
-
-        mHandler = new MyHandler(this);
-        mHandler.postDelayed(ReadingThread.currentThread(), 1000 * 60 * 5);
+    /**
+     * 资源初始化
+     */
+    private void initIdVeiw() {
         rootLayout = (FlipperLayout) findViewById(R.id.container);
-
         recoverView = LayoutInflater.from(ReadPageActivity.this).inflate(R.layout.view_new, null);
         view1 = LayoutInflater.from(ReadPageActivity.this).inflate(R.layout.view_new, null);
         view2 = LayoutInflater.from(ReadPageActivity.this).inflate(R.layout.view_new, null);
         v1 = findViewById(R.id.mv1);
         v2 = findViewById(R.id.mv2);
         dl_layout = (DrawerLayout) findViewById(R.id.dl_layout);
+        seekBar = findViewById(R.id.seekBar);
         btn_next = findViewById(R.id.btn_next);
         catalogue = findViewById(R.id.catalogue);
         catalogue.setOnClickListener(this);
@@ -233,21 +338,11 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         readView1 = (ReadView) view1.findViewById(R.id.textview);
         readView2 = (ReadView) view2.findViewById(R.id.textview);
 
-        Intent intent = getIntent();
-        nextUrl = intent.getStringExtra("a");
-
-        allChapterList= (List<BookChapterDetail>) intent.getSerializableExtra("datas");
-        initIdVeiw();
-        getReadContent();
-        rootLayout.setOnTouchListener((View.OnTouchListener) this);
-
-
-    }
-    private void initIdVeiw() {
         rv = findViewById(R.id.lv_menu);
         //tv = findViewById(R.id.activity_hwtxtplay_readerView);
         layoutManager = new LinearLayoutManager(this);
-      //  Collections.reverse(allChapterList); // 倒序排列
+        // 倒序排列
+        //  Collections.reverse(allChapterList);
         bcAdapter = new BookChapterAdapter(this, allChapterList);
         bcAdapter.setOnItemClickListener(this);
         rv.setAdapter(bcAdapter);
@@ -257,17 +352,20 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
     }
 
+    /**
+     * 监听的设置按键
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_next:
-                buffer.clear();
+              /*  rootLayout.removeAllViewsInLayout();
+                rootLayout.initFlipperViews(ReadPageActivity.this, view2, view1, recoverView);*/
                 nextUrl = txtUrl; //https://www.biquge5200.com/42_42714/16445334.html
-
                 Log.e("FUCK THE NEXTURL", txtUrl);
                 getReadContent();
-                rootLayout.removeAllViews();
-                rootLayout.initFlipperViews(ReadPageActivity.this, view2, view1, recoverView);
+                flag = true;
                 break;
             case R.id.catalogue:
                 ToastUtil.getLongToastByString(this, "你点击了目录");
@@ -283,25 +381,35 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
     }
 
+    /**
+     * 返回键
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        DataSupport.deleteAll(MyPage.class);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        this.finish();
     }
 
+    /**
+     * 视图创建与显示
+     * @param direction 滑动方向
+     * @param index 新建页的索引
+     * @return
+     */
     @Override
     public View createView(final int direction, final int index) {
         String a;
         View newView;
 
         this.index = index;
-        if (direction == FlipperLayout.TouchListener.MOVE_TO_LEFT) { //��һҳ
+        if (direction == FlipperLayout.TouchListener.MOVE_TO_LEFT && flag) { //��һҳ
             buffer.position(getStartPosition(index));
             newView = LayoutInflater.from(this).inflate(R.layout.view_new, null);
-            final ReadView readView = (ReadView) newView.findViewById(R.id.textview);
-
+            readView = (ReadView) newView.findViewById(R.id.textview);
             readView.setText(buffer.toString());
-            Log.e("FUCK THE NEXTURL3", readView.getText().toString());
+            Log.e("FUCK THE NEXTURL1", "我执行了view3");
             a = buffer.toString();
             ViewTreeObserver vto2 = readView.getViewTreeObserver();
             vto2.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -311,7 +419,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
 
                     MyPage page = new MyPage();
                     page.setPageSize(charNm);
-                    //ToastUtil.getLongToastByString(MainActivity.this,"����"+charNm);
+                    //往下走的页数的字数加上当前页字数
                     page.setStartPosition(getStartPosition(index) + charNm);
                     page.setBookId(index + 1);
                     page.setId(index + 1);
@@ -324,10 +432,24 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
                 }
             });
         } else {
-            buffer.position(getStartPosition(index - 2));
+
+
             newView = LayoutInflater.from(this).inflate(R.layout.view_new, null);
-            final ReadView readView = (ReadView) newView.findViewById(R.id.textview);
-            readView.setText(buffer);
+            readView = (ReadView) newView.findViewById(R.id.textview);
+            if (!flag) {
+                buffer.position(1);
+                readView.setText(buffer);
+                Log.e("FUCK THE NEXTURL1", "出来吧 你 光能使者");
+                flag = false;
+
+            } else {
+                buffer.position(getStartPosition(index - 2));
+                readView.setText(buffer);
+
+
+                Log.e("FUCK THE NEXTURL1", "我执行了view3第二部分");
+            }
+
 
         }
 
@@ -339,9 +461,11 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     * */
     @Override
     public boolean whetherHasNextPage() throws IOException {
-
-        buffer.position(getStartPosition(index));
-        if (buffer.toString().length()<1) {
+        if (buffer.position(getStartPosition(index)) != null)
+            buffer.position(getStartPosition(index));
+        else
+            return false;
+        if (buffer.toString().length() < 1) {
             //ToastUtil.getLongToastByString(ReadPageActivity.this, "没有下一页了");
 
             return false;
@@ -355,6 +479,12 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         return true;
     }
 
+    /**
+     * 控制面板的触摸事件
+     * @param v
+     * @param motionEvent
+     * @return
+     */
     @Override
     public boolean onTouch(View v, MotionEvent motionEvent) {
         DisplayMetrics dm = new DisplayMetrics();
@@ -400,6 +530,9 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         return false;
     }
 
+    /**
+     * 字符流缓冲的线程
+     */
     private static class ReadingThread extends Thread {
 
         public BufferedReader reader = null;
@@ -445,6 +578,9 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
             }
         }
     }
+    /**
+     *  获取阅读文本内容
+     */
 
     private void getReadContent() {
         GetChapterData data = new GetChapterData(this, nextUrl);
@@ -486,7 +622,7 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
     }
 
     /*
-     *
+     *初始化了无标题栏
      */
     private void initByTitleBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

@@ -119,6 +119,7 @@ public class FlipperLayout extends ViewGroup {
         addView(currentBottomView);
         addView(currentShowView);
         /** 默认将最上层的view滑动到边缘（用于查看上一页） */
+
         addView(currentTopView);
         currentTopView.scrollTo(-screenWidth, 0);
     }
@@ -294,7 +295,7 @@ public class FlipperLayout extends ViewGroup {
                         // 手指向左移动，可以翻屏幕
                         mTouchResult = MOVE_TO_LEFT;
                         if (mVelocityValue < -time) {
-                            time = 200;
+                            time = 100;
                         }
                         mScroller.startScroll(scrollX, 0, screenWidth - scrollX, 0, time);
                     } else {
