@@ -170,9 +170,12 @@ public class ReadPageActivity extends Activity implements View.OnClickListener, 
         mHandler.postDelayed(ReadingThread.currentThread(), 1000 * 60 * 5);
         Intent intent = getIntent();
         nextUrl = intent.getStringExtra("a");
-       // allChapterList = (List<BookChapterDetail>) intent.getSerializableExtra("datas");
+        Bundle bundle = getIntent().getExtras();
+        allChapterList = bundle.getParcelableArrayList("datas");
+
         initIdVeiw();
         getReadContent();
+//        getCallBackFuc();
         rootLayout.setOnTouchListener((View.OnTouchListener) this);
         shared = getSharedPreferences("base64", MODE_PRIVATE);
         num = shared.getInt("seekBarNum", 0);

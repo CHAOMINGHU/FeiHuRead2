@@ -46,7 +46,12 @@ import java.util.Map;
  * Created by hcm on 2018/3/22.
  */
 public class BookHomePageFragment extends Fragment {
-    private GetChapterFunction getChapterFunction;
+    private GetChapterFunction getChapterFunction=new GetChapterFunction() {
+        @Override
+        public void getChapterDetail(List<BookChapterDetail> datas) {
+
+        }
+    };
     private TextView txtTitle, txtAuthor, txtIntro;
     private TextView wuxia;
     private RecyclerView lv;
@@ -59,7 +64,8 @@ public class BookHomePageFragment extends Fragment {
     //标题，作者，简介，图片链接
     String title = "", author = "", intro = "", imgUrl = "", href = "";
     String title1 = "", href1 = "";
-
+    String mUrl;
+    int mPosition;
     private List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
     MyRecyclerAdapter adapter;
     View v;
@@ -96,10 +102,10 @@ public class BookHomePageFragment extends Fragment {
                         public void onItemClick(int position) {
                             if (position < 5) {
                                 //这本书的url
-                                String url = list.get(position-1).get("href").toString();
-                                Log.e("点击了一本书:", url);
+                              mUrl = list.get(position-1).get("href").toString();
+
                                 //读取第一张的url
-                                getData(url, position);
+                                getData(mUrl,position);
                             } else if(5<=position&&position<12) {
                                 Intent intent = new Intent(getContext(), BookTypeWitchSelectedActivity.class);
                                 startActivity(intent);
@@ -107,10 +113,10 @@ public class BookHomePageFragment extends Fragment {
                             } else
                             {
                                 //这本书的url
-                                String url = list.get(position-1).get("href1").toString();
-                                Log.e("FUCK THE URL:", url);
+                                mUrl = list.get(position-1).get("href1").toString();
+
                                 //读取第一张的url
-                                getData(url, position);
+                                getData(mUrl,position);
                             }
 
                         }
@@ -141,7 +147,7 @@ public class BookHomePageFragment extends Fragment {
      * 获取回调链接中下一页的数据
      */
 
-    public void getData(final String url, final int position) {
+    public void getData(final String url, int position) {
 
         new Thread(new Runnable() {
             @Override
@@ -180,10 +186,14 @@ public class BookHomePageFragment extends Fragment {
                     bcdetail.setCurrentChapterTitle(n.toString());
                     datas.add(bcdetail);
 
+
                 }
                 if (nextHref != null&&datas!=null) {
                     Intent intent = new Intent(mContext, ReadPageActivity.class);
                     intent.putExtra("a", nextHref);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("datas", (ArrayList<? extends Parcelable>) datas);
+                    intent.putExtras(bundle);
                     // intent.putExtra("a","http://www.biquge5200.com/75_75597/146416975.html");
                     startActivity(intent);
                     getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
